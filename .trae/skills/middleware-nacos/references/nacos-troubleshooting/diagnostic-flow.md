@@ -1,0 +1,54 @@
+# 诊断流程详解
+
+## 完整流程
+
+```
+信息收集 → 集群状态检查 → 扁鹊诊断 → 补充信息收集 → 结果分析与建议
+```
+
+## 步骤详解
+
+### 步骤 1：信息收集
+
+- 记录用户描述的异常现象（symptom）
+- 确认必要参数：`project_id`、`env`
+- 常见现象分类：
+  - 连接异常：连接超时、拒绝连接
+  - 注册异常：服务注册不上、实例下线
+  - 配置异常：配置不生效、配置获取失败
+  - 性能异常：响应慢、CPU 高
+
+### 步骤 2：集群状态检查
+
+```bash
+paas-cli nacos info --project {project_id} --env {env}
+```
+
+关注信息：
+- 节点在线数量
+- Leader 节点状态
+- Raft 一致性状态
+
+### 步骤 3：扁鹊诊断
+
+```bash
+bianque diagnose --middleware nacos --project {project_id} --env {env} --check health,raft,log
+```
+
+默认超时 60 秒，如不可达降级为仅 paas-cli。
+
+### 步骤 4：补充信息收集
+
+根据结果选择性执行：
+
+```bash
+# 查询服务注册实例
+paas-cli nacos instances --project {project_id} --env {env} --service {service_name}
+
+# 查看配置列表
+paas-cli nacos config-list --project {project_id} --env {env}
+```
+
+### 步骤 5：结果分析与建议
+
+综合诊断数据生成处理建议，按优先级排序。

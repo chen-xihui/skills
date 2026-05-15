@@ -87,7 +87,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    ```
    - 如 paas-cli 执行失败，提示用户检查安装及网络连通性，改为手动输入 ES 地址
 3. **代码生成**：根据 `language` + `client_version` 选择对应模板，生成文件
-   > 详细代码模板参见 `references/es-client-templates.md`
+   > 详细代码模板参见 `references/es-client-templates/index.md`
    
    | 组合 | 生成文件 |
    |------|---------|
@@ -148,7 +148,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 检查规则清单
 
-> 详细规则说明、检查方法和代码示例参见 `references/es-audit-rules.md`
+> 详细规则说明、检查方法和代码示例参见 `references/es-audit-rules/index.md`
 
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
@@ -214,7 +214,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 操作矩阵
 
-> 详细操作说明、额外参数和命令模板参见 `references/es-cluster-ops.md`
+> 详细操作说明、额外参数和命令模板参见 `references/es-cluster-ops/index.md`
 
 | 操作类型 | paas-cli 命令模板 | 风险等级 | 需确认 |
 |---------|-------------------|---------|--------|
@@ -293,7 +293,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 诊断流程
 
-> 详细诊断能力说明和诊断脚本参见 `references/es-troubleshooting.md`
+> 详细诊断能力说明和诊断脚本参见 `references/es-troubleshooting/index.md`
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如集群状态异常、查询缓慢、写入拒绝等
 2. **集群状态检查**：通过终端执行 paas-cli 查看 ES 集群基本状态

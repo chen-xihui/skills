@@ -91,7 +91,7 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
    ```
    - 如 paas-cli 执行失败，提示用户检查安装及网络连通性，改为手动输入 Redis 地址
 3. **代码生成**：根据参数组合选择对应模板
-   > 详细代码模板参见 `references/redis-client-templates.md`
+   > 详细代码模板参见 `references/redis-client-templates/index.md`
 
    | 组合 | 生成文件 |
    |------|---------|
@@ -154,7 +154,7 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 
 ### 检查规则清单
 
-> 详细规则说明和检查方法参见 `references/redis-audit-rules.md`
+> 详细规则说明和检查方法参见 `references/redis-audit-rules/index.md`
 
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
@@ -219,7 +219,7 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 
 ### 操作矩阵
 
-> 详细操作说明和命令模板参见 `references/redis-cluster-ops.md`
+> 详细操作说明和命令模板参见 `references/redis-cluster-ops/index.md`
 
 | 操作类型 | paas-cli 命令模板 | 风险等级 | 需确认 |
 |---------|-------------------|---------|--------|
@@ -289,7 +289,7 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 
 ### 诊断流程
 
-> 详细诊断能力说明参见 `references/redis-troubleshooting.md`
+> 详细诊断能力说明参见 `references/redis-troubleshooting/index.md`
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如连接超时、响应慢、内存满等
 2. **集群状态检查**：通过终端执行 paas-cli 查看 Redis 集群基本状态
