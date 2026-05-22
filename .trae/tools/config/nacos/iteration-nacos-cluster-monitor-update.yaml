@@ -1,0 +1,6 @@
+resource: nacosclustermonitor
+action: update
+params:
+  clusterName: iteration-nacos-cluster
+  monitorType: prometheus                   # 监控类型: prometheus / grafana
+  endpoint: http://prometheus.monitoring:9090

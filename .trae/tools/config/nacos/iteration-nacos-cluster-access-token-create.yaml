@@ -1,0 +1,7 @@
+resource: nacosclusteraccesstoken
+action: create
+params:
+  clusterName: iteration-nacos-cluster      # [必填] 集群名称
+  tokenName: readonly-token                 # [必填] 令牌名称
+  permissions: read                         # [必填] 权限: read / write / admin
+  expiresDays: 30                           # [选填] 有效天数，默认30

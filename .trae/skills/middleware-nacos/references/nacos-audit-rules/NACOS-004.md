@@ -1,4 +1,4 @@
-# NACOS-004：密码是否硬编码
+# NACOS-004: 密码是否硬编码
 
 | 属性 | 说明 |
 |------|------|
@@ -23,14 +23,14 @@
 ## 违规示例
 
 ```java
-// ❌ 密码硬编码
+// 密码硬编码
 properties.put("password", "MySecretPassword123");
 ```
 
 ## 合规示例
 
 ```java
-// ✅ 密码通过配置注入
+// 密码通过配置注入
 @Value("${nacos.password}")
 private String password;
 

@@ -1,0 +1,5 @@
+resource: nacosclusteraccesstoken
+action: delete
+params:
+  clusterName: iteration-nacos-cluster
+  tokenName: readonly-token

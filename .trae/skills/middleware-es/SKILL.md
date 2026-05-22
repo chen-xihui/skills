@@ -1,19 +1,20 @@
 ---
 name: "middleware-es"
 version: "1.0.0"
-description: "Elasticsearch中间件技能，提供客户端创建、代码优化检查、集群操作和故障排查能力。触发词：ES、Elasticsearch、搜索引擎、索引、搜索、Elastic"
+description: "Elasticsearch中间件技能，提供客户端创建、代码优化检查、集群操作、故障排查和服务接入指引能力。触发词：ES、Elasticsearch、搜索引擎、索引、搜索、Elastic"
 ---
 
 # Elasticsearch 中间件
 
 ## 功能概述
 
-本 Skill 为 Elasticsearch 中间件提供四项标准化运维能力：
+本 Skill 为 Elasticsearch 中间件提供五项标准化能力：
 
 1. **客户端创建与配置**：根据参数自动生成 ES 客户端代码和配置文件，支持 Java（新版 ElasticsearchClient 8.x+ / 旧版 RestHighLevelClient 7.x）、Go、Python
 2. **代码优化检查**：扫描项目代码，按 8 条规则清单逐项检查 ES 使用规范性
 3. **集群交互**：通过 paas-cli 执行 ES 集群查询和运维操作，含风险分级确认机制
 4. **故障排查**：通过扁鹊平台和 paas-cli 诊断 ES 集群异常，支持降级方案
+5. **服务接入指引**：提供设计、开发、测试、上线全生命周期的 ES 服务接入指导
 
 ## 通用规范
 
@@ -87,7 +88,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    ```
    - 如 paas-cli 执行失败，提示用户检查安装及网络连通性，改为手动输入 ES 地址
 3. **代码生成**：根据 `language` + `client_version` 选择对应模板，生成文件
-   > 详细代码模板参见 `references/es-client-templates/index.md`
+   > 详细代码模板参见 `references/es-client-templates/` 目录
    
    | 组合 | 生成文件 |
    |------|---------|
@@ -148,7 +149,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 检查规则清单
 
-> 详细规则说明、检查方法和代码示例参见 `references/es-audit-rules/index.md`
+> 详细规则说明、检查方法和代码示例参见 `references/es-audit-rules/` 目录
 
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
@@ -214,7 +215,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 操作矩阵
 
-> 详细操作说明、额外参数和命令模板参见 `references/es-cluster-ops/index.md`
+> 详细操作说明、额外参数和命令模板参见 `references/es-cluster-ops/` 目录
 
 | 操作类型 | paas-cli 命令模板 | 风险等级 | 需确认 |
 |---------|-------------------|---------|--------|
@@ -293,7 +294,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 诊断流程
 
-> 详细诊断能力说明和诊断脚本参见 `references/es-troubleshooting/index.md`
+> 详细诊断能力说明和诊断脚本参见 `references/es-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如集群状态异常、查询缓慢、写入拒绝等
 2. **集群状态检查**：通过终端执行 paas-cli 查看 ES 集群基本状态
@@ -365,6 +366,69 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ---
 
+## 能力五：服务接入指引
+
+### 触发条件
+
+用户请求 ES 服务接入指导，如：
+- "ES 服务如何接入"
+- "搜索设计指引"
+- "Elasticsearch 开发规范"
+- "ES 上线检查"
+- "索引设计原则"
+- "分词器怎么选"
+
+### 指引内容
+
+> 完整接入指引参见 `references/es-access-guide/` 目录
+
+**设计指引**
+- ES 依赖设计（交易类/非交易类接口的熔断与降级）
+- 数据隔离规则（按业务领域/可用性等级拆分）
+- 部署模式选型（混合 vs 角色分离，规格选型）
+- 持久化模式选型（同步刷盘/异步刷盘）
+- 命名设计（索引/字段命名规范）
+- 分词器选择（standard/keyword/IK/pinyin/自定义）
+- 索引设计（主分片/副本分片/分片限制）
+- Mapping 设计（字段类型选择/多字段配置/聚合优化）
+- 查询设计（DSL 语法/性能优化/聚合查询/相关性评分）
+
+**开发指引**
+- 服务端版本要求（7.17+ / 8.12+）
+- 客户端版本要求（elasticsearch-java，版本与服务端一致）
+- Spring Boot 兼容性（3.x→ES 8.x / 2.x→ES 7.x）
+- 服务端关键配置参数（JVM/分片/刷新间隔）
+- 客户端关键配置参数（连接池/超时/重试/压缩）
+- 安全编码（强制认证，禁止无认证）
+- 容错开发（健康检查/重试/降级/熔断）
+
+**测试指引**
+- 性能测试（全链路测试、容量评估）
+- 专项测试案例（data/master 节点宕机/网络延迟/网络丢包）
+
+**上线指引**
+- 前置资源准备（部署模式/资源需求/容灾要求/定制化需求）
+- 告警原则确认
+- 接入前置检查（客户端配置/生产资源/网络连通性/连接认证）
+- 应急卡片准备
+
+### 输出格式
+
+```
+📖 Elasticsearch 服务接入指引
+
+根据您的需求，以下是相关指引：
+
+**{指引类别}**
+{具体指引内容摘要}
+
+📎 详细内容请参考：references/es-access-guide/ 目录
+```
+
+---
+
 ## 变更记录
 
+- v1.2.0 (2026-05-15): 重构 references 目录结构，将大文件拆分为模块化文件夹（es-audit-rules/、es-client-templates/、es-access-guide/、es-cluster-ops/、es-troubleshooting/），优化 LLM 上下文窗口使用效率
+- v1.1.0 (2026-05-12): 新增服务接入指引能力，涵盖设计、开发、测试、上线全生命周期指导
 - v1.0.0 (2026-05-11): 初始版本，包含客户端创建与配置、代码优化检查、集群交互、故障排查四项基础能力

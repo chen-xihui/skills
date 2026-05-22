@@ -1,0 +1,22 @@
+resource: esindextemplate
+action: create
+params:
+  name: logs-template
+  indexPatterns:
+    - log-*
+  priority: 100
+  template:
+    settings:
+      number_of_shards: 3
+      number_of_replicas: 1
+      refresh_interval: 5s
+    mappings:
+      dynamic: strict
+      properties:
+        timestamp:
+          type: date
+        level:
+          type: keyword
+        message:
+          type: text
+          analyzer: standard

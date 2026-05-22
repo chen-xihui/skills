@@ -1,0 +1,4 @@
+resource: nacosclustermonitor
+action: get
+params:
+  clusterName: iteration-nacos-cluster

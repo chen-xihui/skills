@@ -1,0 +1,6 @@
+resource: nacosclusternetworkpolicy
+action: update
+params:
+  clusterName: iteration-nacos-cluster
+  policyName: allow-internal
+  cidr: 10.0.0.0/8,172.16.0.0/12          # 更新后的 CIDR 列表

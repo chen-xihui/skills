@@ -1,4 +1,4 @@
-# NACOS-007：命名空间是否按环境隔离
+# NACOS-007: 命名空间是否按环境隔离
 
 | 属性 | 说明 |
 |------|------|
@@ -24,7 +24,7 @@
 ## 违规示例
 
 ```yaml
-# ❌ 所有环境使用相同 namespace（默认 public）
+# 所有环境使用相同 namespace（默认 public）
 # bootstrap-dev.yml
 nacos:
   namespace: ""
@@ -37,7 +37,7 @@ nacos:
 ## 合规示例
 
 ```yaml
-# ✅ 不同环境使用不同 namespace
+# 不同环境使用不同 namespace
 # bootstrap-dev.yml
 nacos:
   namespace: "dev-namespace-id"

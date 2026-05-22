@@ -1,4 +1,4 @@
-# NACOS-001：服务订阅是否启用本地快照
+# NACOS-001: 服务订阅是否启用本地快照
 
 | 属性 | 说明 |
 |------|------|
@@ -23,7 +23,7 @@
 ## 违规示例
 
 ```java
-// ❌ 未启用本地快照
+// 未启用本地快照
 Properties properties = new Properties();
 properties.put("serverAddr", serverAddr);
 // 没有 enableLocalSnapshot 设置（默认为 false）
@@ -33,7 +33,7 @@ ConfigService configService = ConfigFactory.createConfigService(properties);
 ## 合规示例
 
 ```java
-// ✅ 启用本地快照
+// 启用本地快照
 Properties properties = new Properties();
 properties.put("serverAddr", serverAddr);
 properties.put("enableLocalSnapshot", "true");

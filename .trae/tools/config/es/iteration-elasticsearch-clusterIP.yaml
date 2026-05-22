@@ -1,0 +1,6 @@
+resource: esclusterip
+action: create
+params:
+  name: es-clusterip
+  serviceName: elasticsearch
+  port: 9200

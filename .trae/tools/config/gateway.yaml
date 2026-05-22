@@ -1,0 +1,13 @@
+# paas-cli Gateway 配置
+# 用于 CRD 风格命令的 API 网关连接参数
+
+gateway:
+  apiServer: https://paas-api.internal:8443
+  timeout: 30
+  auth:
+    type: token
+    tokenFile: ~/.paas/token
+
+logging:
+  level: info
+  format: text

@@ -1,26 +1,156 @@
 # Redis 故障排查索引
 
-本目录包含 Redis 故障排查的详细诊断流程、常见故障场景和扁鹊诊断命令。
+本目录包含 Redis 故障排查的完整指南，包括诊断流程、常见场景、容灾排查和专项测试。
 
-**使用方式**：先在本索引中定位需要的诊断内容，再读取对应文件获取详细信息。
+## 目录结构
+
+| 文件 | 内容 |
+|------|------|
+| [diagnosis.md](./diagnosis.md) | 诊断能力详细说明（慢查询、内存碎片、主从延迟、持久化、故障转移） |
+| [scenarios.md](./scenarios.md) | 常见故障场景与处理建议（响应慢、内存满、连接超时、主从不一致） |
+| [disaster-recovery.md](./disaster-recovery.md) | 容灾故障排查（功能限制、切换流程、Proxy兼容性、数据同步时延） |
+| [test-cases.md](./test-cases.md) | 专项测试案例（网络抖动、全量宕机、主从切换、分片故障、容灾切换） |
+| [fault-tolerance.md](./fault-tolerance.md) | 容错开发检查清单（健康检查、异常处置、核心接口可靠性） |
 
 ---
 
-## 诊断流程与能力
+## 诊断流程
 
-| 内容 | 说明 | 详细文件 |
-|------|------|---------|
-| 诊断流程详解 | 5 步诊断完整流程和步骤说明 | [diagnostic-flow.md](./diagnostic-flow.md) |
-| 诊断能力说明 | 慢查询、内存碎片、主从延迟、持久化、故障转移 | [diagnostic-capabilities.md](./diagnostic-capabilities.md) |
-| 扁鹊诊断命令参考 | 完整诊断、单项诊断、返回格式 | [bianque-commands.md](./bianque-commands.md) |
-| 降级诊断方案 | 扁鹊不可达时的 paas-cli 基本诊断 | [fallback-diagnosis.md](./fallback-diagnosis.md) |
-| 诊断报告输出模板 | 故障诊断报告格式模板 | [report-template.md](./report-template.md) |
+### 完整流程
 
-## 常见故障场景
+```
+信息收集 → 集群状态检查 → 扁鹊诊断 → 补充信息收集 → 结果分析与建议
+```
 
-| 场景 | 症状 | 详细文件 |
-|------|------|---------|
-| Redis 响应慢 | 读写延迟明显增加 | [scenario-01-slow-response.md](./scenario-01-slow-response.md) |
-| Redis 内存满 | OOM 或内存使用率接近 maxmemory | [scenario-02-memory-full.md](./scenario-02-memory-full.md) |
-| Redis 连接超时 | 客户端连接 Redis 超时 | [scenario-03-connection-timeout.md](./scenario-03-connection-timeout.md) |
-| 主从数据不一致 | 从节点数据与主节点不一致 | [scenario-04-replication-lag.md](./scenario-04-replication-lag.md) |
+### 步骤详解
+
+#### 步骤 1：信息收集
+
+- 记录用户描述的异常现象（symptom）
+- 确认必要参数：`project_id`、`env`
+- 常见现象分类：
+  - 连接异常：连接超时、拒绝连接
+  - 性能异常：响应慢、延迟高
+  - 内存异常：OOM、内存满
+  - 数据异常：数据丢失、主从不一致
+  - 持久化异常：RDB/AOF 保存失败
+
+#### 步骤 2：集群状态检查
+
+```bash
+paas-cli redis info --project {project_id} --env {env}
+```
+
+关注信息：
+- 集群模式（standalone/sentinel/cluster）
+- 节点在线状态
+- 连接数和阻塞客户端数
+- 内存使用率和淘汰策略
+
+#### 步骤 3：扁鹊诊断
+
+```bash
+bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog,memory,replication
+```
+
+默认超时 60 秒，如不可达降级为仅 paas-cli。
+
+#### 步骤 4：补充信息收集
+
+根据结果选择性执行：
+
+```bash
+# 查看内存详情
+paas-cli redis memory --project {project_id} --env {env}
+
+# 查看节点信息
+paas-cli redis nodes --project {project_id} --env {env}
+```
+
+#### 步骤 5：结果分析与建议
+
+综合诊断数据生成处理建议，按优先级排序。
+
+---
+
+## 扁鹊诊断命令参考
+
+### 完整诊断命令
+
+```bash
+bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog,memory,replication
+```
+
+### 单项诊断
+
+```bash
+# 仅检查慢查询
+bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog
+
+# 仅检查内存
+bianque diagnose --middleware redis --project {project_id} --env {env} --check memory
+
+# 仅检查主从复制
+bianque diagnose --middleware redis --project {project_id} --env {env} --check replication
+```
+
+### 返回格式
+
+```json
+{
+  "status": "success|error",
+  "findings": [
+    {
+      "type": "slowlog|memory|replication",
+      "severity": "critical|warning|info",
+      "message": "描述信息",
+      "details": {}
+    }
+  ],
+  "logs": ["相关日志条目"],
+  "suggestions": ["处理建议"]
+}
+```
+
+---
+
+## 降级诊断方案
+
+扁鹊不可达时，使用 paas-cli 基本诊断：
+
+```bash
+# 1. 查看集群状态
+paas-cli redis info --project {project_id} --env {env}
+
+# 2. 查看节点信息
+paas-cli redis nodes --project {project_id} --env {env}
+
+# 3. 查看内存使用
+paas-cli redis memory --project {project_id} --env {env}
+```
+
+**降级局限**：无法获取慢查询详情、内存碎片率分析、主从延迟详情和故障转移日志。建议在报告中注明降级。
+
+---
+
+## 诊断报告输出模板
+
+```
+🔍 故障诊断报告
+
+🩺 诊断目标：Redis / {env} / {project_id}
+📡 诊断来源：扁鹊平台 / paas-cli{如降级则注明"（降级模式）"}
+
+📊 诊断结论：{一句话结论}
+
+📋 详细发现：
+  1. {发现1}
+  2. {发现2}
+
+💡 处理建议：
+  1. {建议1}（优先级：高）
+  2. {建议2}（优先级：中）
+
+📎 相关日志/数据：
+{诊断脚本返回的关键数据摘要}
+```

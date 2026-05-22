@@ -1,0 +1,7 @@
+resource: nacosclusterbackup
+action: create
+params:
+  clusterName: iteration-nacos-cluster      # [必填] 集群名称
+  backupType: full                          # [必填] 备份类型: full / incremental
+  storagePath: /backup/nacos/2026-05-14/    # [选填] 备份存储路径
+  retentionDays: 7                          # [选填] 保留天数，默认7

@@ -85,7 +85,7 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
    ```
    - 如 paas-cli 执行失败，提示用户检查安装及网络连通性，改为手动输入 Nacos 地址
 3. **代码生成**：根据 `language` 选择对应模板，生成文件
-   > 详细代码模板参见 `references/nacos-client-templates/index.md`，按语言和文件类型读取对应子文件
+   > 详细代码模板参见 `references/nacos-client-templates/` 目录
 
    | 语言 | 生成文件 |
    |------|---------|
@@ -144,7 +144,7 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 
 ### 检查规则清单
 
-> 详细规则说明和检查方法参见 `references/nacos-audit-rules/index.md`，按规则 ID 读取对应子文件
+> 详细规则说明和检查方法参见 `references/nacos-audit-rules/` 目录
 
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
@@ -205,7 +205,7 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 
 ### 操作矩阵
 
-> 详细操作说明和命令模板参见 `references/nacos-cluster-ops/index.md`，按操作类型读取对应子文件
+> 详细操作说明和命令模板参见 `references/nacos-cluster-ops/` 目录
 
 | 操作类型 | paas-cli 命令模板 | 风险等级 | 需确认 |
 |---------|-------------------|---------|--------|
@@ -282,7 +282,7 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 
 ### 诊断流程
 
-> 详细诊断能力说明参见 `references/nacos-troubleshooting/index.md`，按诊断内容读取对应子文件
+> 详细诊断能力说明参见 `references/nacos-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如连接超时、服务下线、配置不生效等
 2. **集群状态检查**：通过终端执行 paas-cli 查看 Nacos 集群基本状态

@@ -1,0 +1,6 @@
+resource: eslb
+action: create
+params:
+  name: es-loadbalancer
+  serviceName: elasticsearch
+  port: 9200

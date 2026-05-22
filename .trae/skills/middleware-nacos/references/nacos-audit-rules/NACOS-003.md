@@ -1,4 +1,4 @@
-# NACOS-003：是否循环调用 getConfig 而未使用 Listener
+# NACOS-003: 是否循环调用 getConfig 而未使用 Listener
 
 | 属性 | 说明 |
 |------|------|
@@ -23,7 +23,7 @@
 ## 违规示例
 
 ```java
-// ❌ 循环中轮询配置
+// 循环中轮询配置
 while (running) {
     String config = configService.getConfig(dataId, group, 5000);
     // 处理配置...
@@ -34,7 +34,7 @@ while (running) {
 ## 合规示例
 
 ```java
-// ✅ 使用 Listener 订阅配置变更
+// 使用 Listener 订阅配置变更
 configService.addListener(dataId, group, new Listener() {
     @Override
     public Executor getExecutor() {

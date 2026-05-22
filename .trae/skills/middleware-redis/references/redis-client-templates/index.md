@@ -2,60 +2,37 @@
 
 本目录包含 Redis 客户端的代码模板，覆盖 Java（Lettuce/Jedis × Standalone/Sentinel/Cluster）、Go、Python。
 
-**使用方式**：先在本索引中根据目标语言和部署模式定位需要的模板文件，再读取对应文件获取完整代码。
+## 模板总览
 
----
+| 语言/框架 | 部署模式 | 详细文档 |
+|-----------|---------|---------|
+| **Java** |  |  |
+| Lettuce | Standalone | [java.md](./java.md#1-java--lettuce--standalone) |
+| Jedis | Standalone | [java.md](./java.md#2-java--jedis--standalone) |
+| Lettuce | Sentinel | [java.md](./java.md#3-java--lettuce--sentinel) |
+| Lettuce | Cluster | [java.md](./java.md#4-java--lettuce--cluster) |
+| Lettuce | Cluster + TCP参数 + 连接池 | [java.md](./java.md#7-java--lettuce-集群模式完整配置) |
+| Jedis | 完整配置（含推荐参数） | [java.md](./java.md#74-jedis-配置示例) |
+| **Go** | Standalone | [go.md](./go.md) |
+| **Python** | Standalone | [python.md](./python.md) |
 
-## Java 模板
+## 依赖说明
 
-### Lettuce + Standalone
+- **Java + Lettuce**：`io.lettuce:lettuce-core`、`org.springframework.boot:spring-boot-starter-data-redis`
+- **Java + Jedis**：`redis.clients:jedis`、`org.springframework.boot:spring-boot-starter-data-redis`
+- **Go**：`github.com/redis/go-redis/v9`
+- **Python**：`pip install redis`
 
-| 模板文件 | 说明 | 生成目标文件 |
-|---------|------|------------|
-| [java-lettuce-standalone-config.md](./java-lettuce-standalone-config.md) | RedisConfig + RedisTemplate 配置 | RedisConfig.java |
-| [java-lettuce-standalone-service.md](./java-lettuce-standalone-service.md) | RedisService 服务类（含 scan/pipeline） | RedisService.java |
-| [java-lettuce-standalone-yml.md](./java-lettuce-standalone-yml.md) | Spring Boot 应用配置 | application.yml |
+## 客户端版本要求
 
-### Jedis + Standalone
+| 客户端 | 推荐版本 | 说明 |
+|--------|---------|------|
+| Jedis | ≥4.4.0 / ≥3.10 | 4.4.0、3.10.0 版本对 DNS 解析/服务断联功能进行优化 |
+| Lettuce | ≥6.3.0 | 6.3.0 版本增加 tcpTimeout 参数配置 |
+| Redisson | 不推荐 | 非开源技术目录软件 |
 
-| 模板文件 | 说明 | 生成目标文件 |
-|---------|------|------------|
-| [java-jedis-config.md](./java-jedis-config.md) | JedisPool 配置 | JedisConfig.java |
-| [java-jedis-yml.md](./java-jedis-yml.md) | Spring Boot 应用配置（Jedis） | application.yml |
+## 安全注意事项
 
-### Lettuce + Sentinel
-
-| 模板文件 | 说明 | 生成目标文件 |
-|---------|------|------------|
-| [java-lettuce-sentinel-config.md](./java-lettuce-sentinel-config.md) | Sentinel 连接配置 | RedisSentinelConfig.java |
-| [java-lettuce-sentinel-yml.md](./java-lettuce-sentinel-yml.md) | Sentinel 应用配置 | application.yml |
-
-### Lettuce + Cluster
-
-| 模板文件 | 说明 | 生成目标文件 |
-|---------|------|------------|
-| [java-lettuce-cluster-config.md](./java-lettuce-cluster-config.md) | Cluster 连接配置 | RedisClusterConfig.java |
-| [java-lettuce-cluster-yml.md](./java-lettuce-cluster-yml.md) | Cluster 应用配置 | application.yml |
-
-## Go 模板
-
-| 模板文件 | 说明 | 生成目标文件 |
-|---------|------|------------|
-| [go-client.md](./go-client.md) | Redis 客户端封装 | redis_client.go |
-| [go-config-yml.md](./go-config-yml.md) | Go 项目配置文件 | config.yaml |
-
-## Python 模板
-
-| 模板文件 | 说明 | 生成目标文件 |
-|---------|------|------------|
-| [python-client.md](./python-client.md) | Redis 客户端工具类 | redis_client.py |
-| [python-config-yml.md](./python-config-yml.md) | Python 项目配置文件 | config.yaml |
-| [python-pip-deps.md](./python-pip-deps.md) | Pip 依赖配置 | requirements.txt 片段 |
-
----
-
-## 通用规范
-
-- 所有密码字段均使用 `${REDIS_PASSWORD}` 占位符，引导用户通过环境变量注入
-- 模板中已内嵌 REDIS-001 ~ REDIS-007 最佳实践注释
-- Go 和 Python 模板的密码获取逻辑：优先使用传入值 → 回退到环境变量 `REDIS_PASSWORD`
+- 密码以 `${REDIS_PASSWORD}` 占位符形式写入配置文件，通过环境变量或密钥管理系统注入
+- 连接池参数需根据实际并发量调整，禁止使用默认值 -1
+- 集群模式下 Lettuce 需配置拓扑刷新开关和周期

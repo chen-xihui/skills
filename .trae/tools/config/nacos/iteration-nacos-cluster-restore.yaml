@@ -1,0 +1,6 @@
+resource: nacosclusterrestore
+action: update
+params:
+  clusterName: iteration-nacos-cluster      # [必填] 集群名称
+  backupId: bk-5231                         # [必填] 备份ID
+  restoreMode: overwrite                    # [必填] 恢复模式: overwrite / merge

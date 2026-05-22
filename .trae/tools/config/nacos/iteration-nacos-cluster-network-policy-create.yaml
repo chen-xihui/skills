@@ -1,0 +1,7 @@
+resource: nacosclusternetworkpolicy
+action: create
+params:
+  clusterName: iteration-nacos-cluster
+  policyName: allow-internal                # 策略名称
+  cidr: 10.0.0.0/8                         # 允许的 CIDR
+  direction: ingress                        # 方向: ingress / egress

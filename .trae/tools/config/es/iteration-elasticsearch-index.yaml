@@ -1,0 +1,16 @@
+resource: esindex
+action: create
+params:
+  name: log-2026-05
+  shards: 3
+  replicas: 1
+  mapping:
+    dynamic: strict
+    properties:
+      timestamp:
+        type: date
+      level:
+        type: keyword
+      message:
+        type: text
+        analyzer: standard

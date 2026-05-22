@@ -1,31 +1,98 @@
 # Redis 集群交互操作索引
 
-本目录包含 Redis 集群交互的 9 项操作详细说明。
+本目录包含 Redis 集群交互的完整操作说明，基于 paas-cli 标准命令格式。
 
-**使用方式**：先在本索引中定位需要执行的操作类型，再读取对应文件获取详细命令、参数和确认流程。
+涵盖：Redis 集群版、Redis 哨兵、Redis 主从版、Redis 联邦集群、Redis 高阶策略。
 
-**通用前置条件**：执行任何操作前，先读取 [prerequisites.md](./prerequisites.md) 检查 paas-cli 可用性和网络连通性。
+## 通用命令格式
 
----
+```bash
+paas-cli <action> <resource> --gateway-config=config/gateway.yaml -f <config-file>
+```
 
-## 操作索引
+- **action**: `create` / `get` / `delete` / `update` / `switch`
+- **gateway-config**: PaaS 网关配置文件路径
+- **-f**: YAML 配置文件路径
 
-| 操作类型 | 风险等级 | 需确认 | 详细文件 |
-|---------|---------|--------|---------|
-| 查看集群状态 | 🟢 低风险 | 否 | [op-01-cluster-info.md](./op-01-cluster-info.md) |
-| 查看节点信息 | 🟢 低风险 | 否 | [op-02-nodes.md](./op-02-nodes.md) |
-| 查看内存使用 | 🟢 低风险 | 否 | [op-03-memory.md](./op-03-memory.md) |
-| 创建实例 | 🟡 中风险 | 是 | [op-04-create.md](./op-04-create.md) |
-| 扩缩容 | 🟡 中风险 | 是 | [op-05-scale.md](./op-05-scale.md) |
-| Slot 迁移 | 🔴 高风险 | 是 | [op-06-slot-migrate.md](./op-06-slot-migrate.md) |
-| 内存策略调整 | 🟡 中风险 | 是 | [op-07-memory-policy.md](./op-07-memory-policy.md) |
-| 升级版本 | 🔴 高风险 | 是 | [op-08-upgrade.md](./op-08-upgrade.md) |
-| 删除集群 | 🔴 高风险 | 是 | [op-09-delete.md](./op-09-delete.md) |
+## 通用前置条件
 
----
+```bash
+# 1. 检查 paas-cli 是否可用
+paas-cli --version
+# 2. 检查网络连通性
+paas-cli ping
+```
 
-## 确认流程速查
+## 目录结构
 
-- 🟢 低风险：直接执行，无需确认
-- 🟡 中风险：展示命令 → 询问"是否继续？" → 获得肯定回复后执行
-- 🔴 高风险：展示命令及影响范围 → 要求用户明确回复"确认" → 方可执行
+| 文件 | 说明 | 操作数 |
+|------|------|--------|
+| [cluster.md](./cluster.md) | Redis 集群版（集群管理、实例参数、扩缩容、服务发现、过期时间） | 17 |
+| [sentinel.md](./sentinel.md) | Redis 哨兵（哨兵管理、规格、服务发现、过期时间） | 10 |
+| [master-slave.md](./master-slave.md) | Redis 主从版（主从管理、实例参数、规格、服务发现、过期时间） | 16 |
+| [federated.md](./federated.md) | Redis 联邦集群（联邦集群版、联邦哨兵、联邦主从版） | 13 |
+| [advanced-strategy.md](./advanced-strategy.md) | Redis 高阶策略（多活、热备、单元化） | 17 |
+
+## 命令速查表
+
+### Redis 集群版
+
+| 功能分类 | resource | action | 说明 |
+|----------|----------|--------|------|
+| 集群管理 | `ncrcluster` | create / get / delete / update | 创建、获取、删除、更新集群 |
+| 实例参数 | `ncrclusterconfig` | get / update | 查询、变更实例参数 |
+| 参数回滚 | `ncrclusterconfigrollback` | update | 回滚实例参数 |
+| 分片扩缩容 | `ncrclusterreplicas` | update | 分片扩缩容 |
+| 变更规格 | `ncrclusterresourceusage` | update | 变更规格 |
+| 规格回滚 | `ncrclusterresourceusagerollback` | update | 规格回滚 |
+| ClusterIP | `ncrclusterip` | create / get / delete | 管理 ClusterIP |
+| LoadBalancer | `ncrclusterlb` | create / get / delete | 管理 LB |
+| 过期时间 | `ncrcluster` | update | 设置过期时间 |
+
+### Redis 哨兵
+
+| 功能分类 | resource | action | 说明 |
+|----------|----------|--------|------|
+| 哨兵管理 | `ncrsentinel` | create / get / delete / update | 创建、获取、删除、更新哨兵 |
+| 变更规格 | `ncrsentinelresourceusage` | update | 变更规格 |
+| 规格回滚 | `ncrsentinelresourceusagerollback` | update | 规格回滚 |
+| LoadBalancer | `ncrsentinellb` | create / get / delete | 管理 LB |
+| 过期时间 | `ncrsentinel` | update | 设置过期时间 |
+
+### Redis 主从版
+
+| 功能分类 | resource | action | 说明 |
+|----------|----------|--------|------|
+| 主从管理 | `ncrsentinelcluster` | create / get / delete / update | 创建、获取、删除、更新主从版 |
+| 实例参数 | `ncrsentinelclusterconfig` | get / update | 查询、变更实例参数 |
+| 参数回滚 | `ncrsentinelclusterconfigrollback` | update | 回滚实例参数 |
+| 变更规格 | `ncrsentinelclusterresourceusage` | update | 变更规格 |
+| 规格回滚 | `ncrsentinelclusterresourceusagerollback` | update | 规格回滚 |
+| ClusterIP | `ncrsentinelclusterip` | create / get / delete | 管理 ClusterIP |
+| LoadBalancer | `ncrsentinelclusterlb` | create / get / delete | 管理 LB |
+| 过期时间 | `ncrsentinelcluster` | update | 设置过期时间 |
+
+### Redis 联邦集群
+
+| 功能分类 | resource | action | 说明 |
+|----------|----------|--------|------|
+| 联邦集群版 | `federatedncrcluster` | create / get / delete | 创建、获取、删除联邦集群 |
+| 联邦集群参数 | `federatedncrclusterconfig` | get / update | 查询、变更实例参数 |
+| 联邦哨兵 | `federatedsentinel` | create / get / delete | 创建、获取、删除联邦哨兵 |
+| 联邦主从版 | `federatedsentinelcluster` | create / get / delete | 创建、获取、删除联邦主从版 |
+| 联邦主从参数 | `federatedsentinelclusterconfig` | get / update | 查询、变更实例参数 |
+
+### Redis 高阶策略
+
+| 功能分类 | resource | action | 说明 |
+|----------|----------|--------|------|
+| 多活策略 | `activestrategy` | create / get / delete / update | 管理多活策略 |
+| Proxy 读模式 | `activestrategy` | update | 更新 Proxy 读模式 |
+| 主从切换 | `activestrategy` | switch | 双集群主从切换 |
+| 多活降备 | `demoteActiveMaster` | switch | 多活降备 |
+| 多活升主 | `promoteActiveSlave` | switch | 多活升主 |
+| 切流恢复 | `activestrategy` | switch | 切流恢复 |
+| 逻辑主恢复 | `configLogicMasterRecover` | update | 逻辑主恢复 |
+| 热备策略 | `hotbackupstrategy` | create / get / delete | 管理热备策略 |
+| 热备切换 | `hotbackupstrategy` | switch | 热备切换 |
+| 单元化策略 | `unitstrategy` | create / get / delete | 管理单元化策略 |

@@ -1,0 +1,4 @@
+resource: nacosclusterbackup
+action: get
+params:
+  clusterName: iteration-nacos-cluster      # [必填] 集群名称

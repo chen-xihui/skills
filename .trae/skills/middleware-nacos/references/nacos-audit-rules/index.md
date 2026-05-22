@@ -1,27 +1,20 @@
 # Nacos 代码优化检查规则索引
 
-本目录包含 NACOS-001 ~ NACOS-007 共 7 条检查规则的详细说明。
+本目录包含 NACOS-001 ~ NACOS-007 共 7 条检查规则。
 
-**使用方式**：先在本索引中定位需要检查的规则 ID，再读取对应文件获取详细检查方法和示例代码。
-
----
-
-## 规则索引
-
-| 规则ID | 规则描述 | 风险等级 | 详细文件 |
-|--------|---------|---------|---------|
-| NACOS-001 | 服务订阅是否启用本地快照（enableLocalSnapshot） | 🔵 建议 | [NACOS-001.md](./NACOS-001.md) |
-| NACOS-002 | 长轮询超时是否合理（configLongPollTimeout 建议 ≤ 30s） | 🟡 警告 | [NACOS-002.md](./NACOS-002.md) |
+| 规则ID | 规则描述 | 风险等级 | 详情 |
+|--------|---------|---------|------|
+| NACOS-001 | 服务订阅是否启用本地快照 | 🔵 建议 | [NACOS-001.md](./NACOS-001.md) |
+| NACOS-002 | 长轮询超时是否合理 | 🟡 警告 | [NACOS-002.md](./NACOS-002.md) |
 | NACOS-003 | 是否循环调用 getConfig 而未使用 Listener | 🔴 严重 | [NACOS-003.md](./NACOS-003.md) |
 | NACOS-004 | 密码是否硬编码在源码中 | 🔴 严重 | [NACOS-004.md](./NACOS-004.md) |
 | NACOS-005 | 心跳间隔、权重等是否符合最佳实践 | 🟡 警告 | [NACOS-005.md](./NACOS-005.md) |
 | NACOS-006 | 是否缺少异常处理和重试配置 | 🟡 警告 | [NACOS-006.md](./NACOS-006.md) |
 | NACOS-007 | 命名空间是否按环境隔离 | 🔵 建议 | [NACOS-007.md](./NACOS-007.md) |
 
----
+## 检查流程
 
-## 检查通用流程
-
-1. 确认扫描路径 `scan_path`
-2. 按规则 ID 逐项检查，读取对应规则文件获取检查方法和搜索模式
-3. 生成审计报告，按风险等级排序（🔴 → 🟡 → 🔵）
+1. 使用 `search_codebase` 和 `grep_code` 工具按规则逐项搜索
+2. 搜索关键词: `NacosConfigService`、`NacosDiscoveryService`、`enableLocalSnapshot`、`configLongPollTimeout`、`getConfig`、`password`、`heartBeatInterval`、`namespace` 等
+3. 按 NACOS-001 ~ NACOS-007 逐项检查,记录发现的问题
+4. 生成审计报告,按风险等级排序(🔴 → 🟡 → 🔵)

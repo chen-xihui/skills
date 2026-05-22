@@ -1,0 +1,5 @@
+resource: nacosclusteraccesstoken
+action: get
+params:
+  clusterName: iteration-nacos-cluster
+  tokenName: readonly-token

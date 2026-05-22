@@ -1,50 +1,89 @@
 # ES 故障排查索引
 
-本目录包含 Elasticsearch 故障排查的详细诊断流程、诊断能力说明、常见故障场景和扁鹊诊断命令。智能体执行故障排查时，先查阅本索引了解诊断流程和场景映射，再按需加载具体文件。
+本目录包含 Elasticsearch 故障排查的完整诊断流程、诊断能力说明、常见故障场景和扁鹊诊断命令。
 
-## 诊断流程
+## 文档结构
 
-> 完整诊断流程详见 [diagnostic-flow.md](diagnostic-flow.md)
+| 文档 | 说明 |
+|------|------|
+| [index.md](./index.md) | 完整诊断流程与步骤详解（本文件） |
+| [capabilities.md](./capabilities.md) | 诊断能力详细说明（健康状态、未分配分片、CPU热点、写入拒绝、索引健康） |
+| [scenarios.md](./scenarios.md) | 常见故障场景与处理建议（Red、查询慢、写入拒绝、Yellow） |
+| [commands.md](./commands.md) | 扁鹊诊断命令参考、降级方案、诊断报告模板 |
+
+---
+
+## 完整诊断流程
 
 ```
 信息收集 → 集群状态检查 → 扁鹊诊断 → 补充信息收集 → 结果分析与建议
+    │              │               │               │                │
+    │              │               │               │                ▼
+    │              │               │               │         生成诊断报告
+    │              │               │               │
+    │              │               │               ▼
+    │              │               │        如集群 Yellow/Red：
+    │              │               │        查看未分配分片
+    │              │               │        查看磁盘使用率
+    │              │               │
+    │              │               ▼
+    │              │        扁鹊诊断（优先）
+    │              │        如不可达 → 降级为仅 paas-cli
+    │              │
+    │              ▼
+    │       paas-cli es info
+    │       检查集群基本状态
+    │
+    ▼
+  记录用户描述的异常现象
+  补充收集必要参数
 ```
 
-## 诊断能力
+---
 
-> 5 项诊断能力详见 [diagnostic-capabilities.md](diagnostic-capabilities.md)
+## 步骤详解
 
-| 诊断项 | 检查内容 | 数据来源 |
-|--------|---------|---------|
-| 集群健康状态 | Red / Yellow / Green 及原因 | 扁鹊 + paas-cli |
-| 未分配分片 | UNASSIGNED 分片及分配失败原因 | 扁鹊 |
-| CPU 热点 | 节点 CPU 使用率及热线程 | 扁鹊 |
-| 写入拒绝 | 磁盘水位线、线程池队列拒绝 | 扁鹊 |
-| 索引健康 | 副本分片状态、段合并情况 | 扁鹊 |
+### 步骤 1：信息收集
 
-## 常见故障场景
+- 记录用户描述的异常现象（symptom）
+- 确认必要参数：`project_id`、`env`
+- 如用户未描述具体现象，询问：
+  - "请描述一下具体的异常表现，例如：查询慢、写入失败、集群状态异常等"
+  - "异常是从什么时候开始的？"
+  - "是否有过最近的变更操作？"
 
-| 场景 | 症状 | 详细文件 |
-|------|------|---------|
-| 场景 1 | 集群状态 Red，部分索引不可用 | [scenario-01-cluster-red.md](scenario-01-cluster-red.md) |
-| 场景 2 | ES 查询响应时间明显变长 | [scenario-02-slow-query.md](scenario-02-slow-query.md) |
-| 场景 3 | 写入请求被拒绝或超时 | [scenario-03-write-rejection.md](scenario-03-write-rejection.md) |
-| 场景 4 | 集群状态 Yellow，部分副本未分配 | [scenario-04-cluster-yellow.md](scenario-04-cluster-yellow.md) |
+### 步骤 2：集群状态检查
 
-## 扁鹊诊断命令
+```bash
+paas-cli es info --project {project_id} --env {env}
+```
 
-> 完整命令参考详见 [bianque-commands.md](bianque-commands.md)
+关注信息：
+- 集群状态：Green（正常）/ Yellow（部分副本不可用）/ Red（部分主分片不可用）
+- 节点数量：是否与预期一致
+- 未分配分片数：是否为 0
+- 数据节点负载
+
+### 步骤 3：扁鹊诊断
 
 ```bash
 bianque diagnose --middleware es --project {project_id} --env {env} --check cluster-health,shard,cpu,watermark
 ```
 
-## 降级方案
+默认超时 60 秒，如超时或不可达，降级为仅 paas-cli 检查。
 
-> 扁鹊不可达时的降级方案详见 [fallback-diagnosis.md](fallback-diagnosis.md)
+### 步骤 4：补充信息收集
 
-当扁鹊不可达时，使用 paas-cli 进行基本诊断（es info / es indices / es disk-usage）。
+根据步骤 2 和 3 的结果，选择性执行：
 
-## 报告模板
+```bash
+# 如集群状态为 Yellow/Red，查看索引状态
+paas-cli es indices --project {project_id} --env {env}
 
-> 诊断报告输出格式详见 [report-template.md](report-template.md)
+# 如怀疑磁盘问题，查看磁盘使用率
+paas-cli es disk-usage --project {project_id} --env {env}
+```
+
+### 步骤 5：结果分析与建议
+
+综合所有诊断数据，生成处理建议，按优先级排序。
