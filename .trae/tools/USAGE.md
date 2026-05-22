@@ -2,12 +2,30 @@
 
 本目录包含两个 mock 命令行工具，用于中间件 Skill 演示场景。
 
+## 目录结构
+
+```
+tools/
+├── USAGE.md              # 本文件
+├── bianque/              # 扁鹊诊断平台 CLI
+│   ├── bianque.cmd       # Windows 入口
+│   └── bianque.py        # 主程序
+└── paas-cli/             # PaaS 中间件运维 CLI
+    ├── paas-cli.cmd      # Windows 入口
+    ├── paas-cli.py       # 主程序
+    └── config/           # CRD 资源配置文件
+        ├── gateway.yaml
+        ├── es/
+        ├── nacos/
+        └── redis/
+```
+
 ## 前置准备
 
-将本目录加入 PATH（PowerShell）：
+将两个工具目录分别加入 PATH（PowerShell）：
 
 ```powershell
-$env:PATH = "D:\Users\chenxihui\skill\.trae\tools;" + $env:PATH
+$env:PATH = "D:\Users\chenxihui\skill\.trae\tools\bianque;D:\Users\chenxihui\skill\.trae\tools\paas-cli;" + $env:PATH
 $env:PATHEXT = ".CMD;.PY;" + $env:PATHEXT
 ```
 
@@ -132,6 +150,8 @@ paas-cli es delete --project j036x0 --env DEV
 ### 1.5 CRD 风格命令
 
 格式：`paas-cli <action> <resource> --gateway-config=config/gateway.yaml -f config/<middleware>/<file>.yaml`
+
+> **注意**：CRD 命令中的配置文件路径相对于 `paas-cli/` 目录。建议先 `cd` 到 `paas-cli/` 目录再执行 CRD 命令，或使用绝对路径。`--gateway-config` 默认值已自动解析为脚本所在目录的 `config/gateway.yaml`。
 
 **动作（action）：** `create` | `get` | `update` | `delete` | `switch`
 
@@ -500,31 +520,39 @@ bianque redis clusterUpgradeRecover -n myns -i myredis -o operation_name -t clus
 ### 3.1 目录结构
 
 ```
-config/
-├── gateway.yaml                          # API 网关连接配置
-├── nacos/                                 # Nacos CRD 资源配置
-│   ├── iteration-nacos-cluster-backup-create.yaml
-│   ├── iteration-nacos-cluster-backup-get.yaml
-│   ├── iteration-nacos-cluster-restore.yaml
-│   ├── iteration-nacos-cluster-access-token-create.yaml
-│   ├── iteration-nacos-cluster-access-token-get.yaml
-│   ├── iteration-nacos-cluster-access-token-delete.yaml
-│   ├── iteration-nacos-cluster-monitor-get.yaml
-│   ├── iteration-nacos-cluster-monitor-update.yaml
-│   ├── iteration-nacos-cluster-network-policy-create.yaml
-│   ├── iteration-nacos-cluster-network-policy-get.yaml
-│   ├── iteration-nacos-cluster-network-policy-update.yaml
-│   └── iteration-nacos-cluster-network-policy-delete.yaml
-├── redis/                                 # Redis CRD 资源配置
-│   ├── ncractivestrategy.yaml
-│   ├── ncrhotbackupstrategy.yaml
-│   └── ncrunitstrategy.yaml
-└── es/                                    # ES CRD 资源配置
-    ├── iteration-elasticsearch-index.yaml
-    ├── iteration-elasticsearch-index-template.yaml
-    ├── iteration-elasticsearch-clusterIP.yaml
-    ├── iteration-elasticsearch-lb.yaml
-    └── iteration-elasticsearch-cluster-replicas-update.yaml
+tools/
+├── USAGE.md
+├── bianque/
+│   ├── bianque.cmd
+│   └── bianque.py
+└── paas-cli/
+    ├── paas-cli.cmd
+    ├── paas-cli.py
+    └── config/
+        ├── gateway.yaml                          # API 网关连接配置
+        ├── nacos/                                 # Nacos CRD 资源配置
+        │   ├── iteration-nacos-cluster-backup-create.yaml
+        │   ├── iteration-nacos-cluster-backup-get.yaml
+        │   ├── iteration-nacos-cluster-restore.yaml
+        │   ├── iteration-nacos-cluster-access-token-create.yaml
+        │   ├── iteration-nacos-cluster-access-token-get.yaml
+        │   ├── iteration-nacos-cluster-access-token-delete.yaml
+        │   ├── iteration-nacos-cluster-monitor-get.yaml
+        │   ├── iteration-nacos-cluster-monitor-update.yaml
+        │   ├── iteration-nacos-cluster-network-policy-create.yaml
+        │   ├── iteration-nacos-cluster-network-policy-get.yaml
+        │   ├── iteration-nacos-cluster-network-policy-update.yaml
+        │   └── iteration-nacos-cluster-network-policy-delete.yaml
+        ├── redis/                                 # Redis CRD 资源配置
+        │   ├── ncractivestrategy.yaml
+        │   ├── ncrhotbackupstrategy.yaml
+        │   └── ncrunitstrategy.yaml
+        └── es/                                    # ES CRD 资源配置
+            ├── iteration-elasticsearch-index.yaml
+            ├── iteration-elasticsearch-index-template.yaml
+            ├── iteration-elasticsearch-clusterIP.yaml
+            ├── iteration-elasticsearch-lb.yaml
+            └── iteration-elasticsearch-cluster-replicas-update.yaml
 ```
 
 ### 3.2 gateway.yaml
@@ -541,7 +569,7 @@ config/
 |------|------|--------|------|
 | `--project` | `--project <id>` 或 `--project=<id>` | `j036x0` | 项目标识 |
 | `--env` | `--env <env>` 或 `--env=<env>` | `DEV` | 环境名称 |
-| `--gateway-config` | `--gateway-config=<path>` | `config/gateway.yaml` | 网关配置路径（仅 CRD 命令） |
+| `--gateway-config` | `--gateway-config=<path>` | 脚本目录下 `config/gateway.yaml` | 网关配置路径（仅 CRD 命令，默认自动解析） |
 | `-f` | `-f <path>` | — | 资源配置文件路径（仅 CRD 命令） |
 | `--namespace` / `-n` | `-n <namespace>` | — | K8s 命名空间（bianque 命令） |
 | `--instance` / `-i` | `-i <instance>` | — | 实例名称（bianque 命令） |

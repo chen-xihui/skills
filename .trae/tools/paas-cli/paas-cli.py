@@ -14,6 +14,9 @@ if sys.platform == "win32":
 
 VERSION = "2.4.1"
 
+# Script directory for resolving relative config paths
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # ── helpers ──────────────────────────────────────────────────────────────────
 
 def _ts(offset_hours=0):
@@ -378,7 +381,7 @@ def _gateway_config(args):
     for a in args:
         if a.startswith("--gateway-config="):
             return a.split("=", 1)[1]
-    return "config/gateway.yaml"
+    return os.path.join(_SCRIPT_DIR, "config", "gateway.yaml")
 
 def _config_file(args):
     for i, a in enumerate(args):
