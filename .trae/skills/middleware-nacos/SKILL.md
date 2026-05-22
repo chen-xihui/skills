@@ -44,6 +44,8 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 | config_id | 仅允许字母、数字、下划线、短横线、点号 | `application.yml` ✅ `; rm` ❌ |
 | version | 语义化版本号格式 | `2.3.0` ✅ `2.3.0 && cat /etc/passwd` ❌ |
 | count / replicas | 正整数 | `3` ✅ `3 || echo hack` ❌ |
+| namespace | 仅允许小写字母、数字、短横线 | `myns` ✅ `myns; ls` ❌ |
+| instance | 仅允许字母、数字、短横线 | `mynacos` ✅ `mynacos && cat` ❌ |
 
 ### 操作风险分级与确认
 
@@ -278,6 +280,8 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 |------|------|------|--------|------|
 | project_id | string | 是 | — | 项目组编号 |
 | env | enum | 是 | — | 环境 |
+| namespace | string | 是 | — | Nacos 实例所在的 K8s 命名空间 |
+| instance | string | 是 | — | Nacos 实例名称 |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
 ### 诊断流程
@@ -290,9 +294,9 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
    paas-cli nacos info --project {project_id} --env {env}
    ```
    - 检查集群节点状态和 Raft 一致性
-3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Nacos 诊断脚本
+3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Nacos 诊断命令
    ```
-   bianque diagnose --middleware nacos --project {project_id} --env {env} --check health,raft,log
+   bianque nacos check -n {namespace} -i {instance} -v true
    ```
    - 扁鹊诊断命令默认超时 60 秒
    - 如扁鹊不可达，回退到仅使用 paas-cli 进行基本状态检查
@@ -307,6 +311,8 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 | 日志分析 | 错误日志、异常堆栈 | 扁鹊 |
 | 主备状态 | Leader 选举状态、同步延迟 | 扁鹊 + paas-cli |
 | 客户端连通性 | 从客户端节点到 Nacos 的网络可达性 | 扁鹊 |
+
+> 上述诊断项均通过 `bianque nacos check` 命令执行，使用 `-v true` 展示详情，`-l` 指定日志检查行数
 
 ### 降级方案
 

@@ -44,6 +44,8 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | version | 语义化版本号格式 | `8.12.0` ✅ `8.12.0 && cat /etc/passwd` ❌ |
 | count / nodes / shards / replicas / max-segments | 正整数 | `3` ✅ `3 || echo hack` ❌ |
 | alias | 字母、数字、短横线、下划线 | `log-alias` ✅ `$(whoami)` ❌ |
+| namespace | 仅允许小写字母、数字、短横线 | `myns` ✅ `myns; ls` ❌ |
+| instance | 仅允许字母、数字、短横线 | `myes` ✅ `myes && cat` ❌ |
 
 ### 操作风险分级与确认
 
@@ -290,6 +292,8 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 |------|------|------|--------|------|
 | project_id | string | 是 | — | 项目组编号 |
 | env | enum | 是 | — | 环境 |
+| namespace | string | 是 | — | ES 实例所在的 K8s 命名空间 |
+| instance | string | 是 | — | ES 实例名称 |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
 ### 诊断流程
@@ -303,9 +307,9 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    ```
    - 检查集群健康状态（Green / Yellow / Red）
    - 检查节点数量和状态
-3. **扁鹊诊断**：通过终端调用扁鹊平台执行 ES 诊断脚本
+3. **扁鹊诊断**：通过终端调用扁鹊平台执行 ES 诊断命令
    ```
-   bianque diagnose --middleware es --project {project_id} --env {env} --check cluster-health,shard,cpu,watermark
+   bianque elasticsearch check -n {namespace} -i {instance} -v true -o 50
    ```
    - 扁鹊诊断命令默认超时 60 秒（部分诊断脚本执行时间较长）
    - 如扁鹊不可达，回退到仅使用 paas-cli 进行基本状态检查，在报告中注明
@@ -327,6 +331,9 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | CPU 热点 | 节点 CPU 使用率及热线程 | 扁鹊 |
 | 写入拒绝 | 磁盘水位线、线程池队列拒绝 | 扁鹊 |
 | 索引健康 | 副本分片状态、段合并情况 | 扁鹊 |
+| 客户端连通性 | ES 客户端读写验证 | 扁鹊 |
+
+> 上述诊断项均通过 `bianque elasticsearch check` 命令执行，使用 `-v true` 展示详情，`-o` 指定错误日志输出行数
 
 ### 降级方案
 

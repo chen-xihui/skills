@@ -67,7 +67,7 @@ paas-cli es info --project {project_id} --env {env}
 ### 步骤 3：扁鹊诊断
 
 ```bash
-bianque diagnose --middleware es --project {project_id} --env {env} --check cluster-health,shard,cpu,watermark
+bianque elasticsearch check -n {namespace} -i {instance} -v true -o 50
 ```
 
 默认超时 60 秒，如超时或不可达，降级为仅 paas-cli 检查。

@@ -5,7 +5,7 @@
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 + paas-cli |
-| 检查命令 | `bianque diagnose --middleware es --check cluster-health` |
+| 检查命令 | `bianque elasticsearch check -n {namespace} -i {instance} -v true` |
 | 检查内容 | 集群 Green/Yellow/Red 状态、原因分析 |
 
 **状态含义**：
@@ -28,7 +28,7 @@ paas-cli es info --project {project_id} --env {env}
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware es --check shard` |
+| 检查命令 | `bianque elasticsearch check -n {namespace} -i {instance} -v true` |
 | 检查内容 | UNASSIGNED 分片列表及分配失败原因 |
 
 **常见未分配原因**：
@@ -47,7 +47,7 @@ paas-cli es info --project {project_id} --env {env}
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware es --check cpu` |
+| 检查命令 | `bianque elasticsearch check -n {namespace} -i {instance} -v true` |
 | 检查内容 | 节点 CPU 使用率、热线程分析 |
 
 **关注指标**：
@@ -68,7 +68,7 @@ paas-cli es info --project {project_id} --env {env}
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware es --check watermark` |
+| 检查命令 | `bianque elasticsearch check -n {namespace} -i {instance} -v true -o 50` |
 | 检查内容 | 磁盘水位线状态、线程池队列拒绝情况 |
 
 **关注指标**：
@@ -89,7 +89,7 @@ paas-cli es info --project {project_id} --env {env}
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware es --check cluster-health,shard`（包含索引检查） |
+| 检查命令 | `bianque elasticsearch check -n {namespace} -i {instance} -v true` |
 | 检查内容 | 副本分片状态、段合并情况 |
 
 **关注指标**：

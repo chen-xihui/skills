@@ -46,6 +46,9 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 | version | 语义化版本号格式 | `7.2.0` ✅ |
 | count / replicas | 正整数 | `3` ✅ |
 | policy | 枚举值：noeviction / allkeys-lru / volatile-lru / allkeys-lfu / volatile-lfu / allkeys-random / volatile-random / volatile-ttl | `allkeys-lru` ✅ |
+| namespace | 仅允许小写字母、数字、短横线 | `myns` ✅ |
+| instance | 仅允许字母、数字、短横线 | `myredis` ✅ |
+| type | 枚举值：cluster / sentinel | `cluster` ✅ |
 
 ### 操作风险分级与确认
 
@@ -292,6 +295,9 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 |------|------|------|--------|------|
 | project_id | string | 是 | — | 项目组编号 |
 | env | enum | 是 | — | 环境 |
+| namespace | string | 是 | — | Redis 实例所在的 K8s 命名空间 |
+| instance | string | 是 | — | Redis 实例名称 |
+| type | enum | 是 | — | Redis 类型：cluster / sentinel |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
 ### 诊断流程
@@ -303,9 +309,9 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
    ```
    paas-cli redis info --project {project_id} --env {env}
    ```
-3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Redis 诊断脚本
+3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Redis 诊断命令
    ```
-   bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog,memory,replication
+   bianque redis check -n {namespace} -i {instance} -t {type} -v true
    ```
    - 扁鹊诊断命令默认超时 60 秒
    - 如扁鹊不可达，回退到仅使用 paas-cli 进行基本状态检查
@@ -325,6 +331,9 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 | 主从延迟 | replication offset 差异 | 扁鹊 |
 | 持久化状态 | RDB/AOF 最后保存时间及状态 | 扁鹊 |
 | 故障转移 | Sentinel 选举记录、Failover 日志 | 扁鹊 |
+| 客户端连通性 | Redis 客户端读写验证 | 扁鹊 |
+
+> 上述诊断项均通过 `bianque redis check` 命令执行，使用 `-v true` 展示详情，`-l` 指定日志检查行数
 
 ### 降级方案
 

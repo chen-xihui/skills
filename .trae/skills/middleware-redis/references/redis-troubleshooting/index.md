@@ -50,7 +50,7 @@ paas-cli redis info --project {project_id} --env {env}
 #### 步骤 3：扁鹊诊断
 
 ```bash
-bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog,memory,replication
+bianque redis check -n {namespace} -i {instance} -t {type} -v true
 ```
 
 默认超时 60 秒，如不可达降级为仅 paas-cli。
@@ -78,20 +78,22 @@ paas-cli redis nodes --project {project_id} --env {env}
 ### 完整诊断命令
 
 ```bash
-bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog,memory,replication
+bianque redis check -n {namespace} -i {instance} -t {type} -v true
 ```
 
 ### 单项诊断
 
+> `bianque redis check` 命令会执行综合性检查，使用 `-v true` 展示详情。如需更多日志信息，可使用 `-l` 参数指定日志检查行数。
+
 ```bash
-# 仅检查慢查询
-bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog
+# 综合检查并展示详情
+bianque redis check -n {namespace} -i {instance} -t {type} -v true
 
-# 仅检查内存
-bianque diagnose --middleware redis --project {project_id} --env {env} --check memory
+# 指定日志检查行数（默认 1000）
+bianque redis check -n {namespace} -i {instance} -t {type} -v true -l 2000
 
-# 仅检查主从复制
-bianque diagnose --middleware redis --project {project_id} --env {env} --check replication
+# 基本检查（不展示详情）
+bianque redis check -n {namespace} -i {instance} -t {type}
 ```
 
 ### 返回格式

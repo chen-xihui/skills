@@ -5,7 +5,7 @@
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware redis --check slowlog` |
+| 检查命令 | `bianque redis check -n {namespace} -i {instance} -t {type} -v true` |
 | 检查内容 | slowlog 中的高频慢命令 |
 
 **关注指标**：
@@ -18,7 +18,7 @@
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 + paas-cli |
-| 检查命令 | `bianque diagnose --middleware redis --check memory` |
+| 检查命令 | `bianque redis check -n {namespace} -i {instance} -t {type} -v true` |
 | 检查内容 | mem_fragmentation_ratio |
 
 **关注指标**：
@@ -31,7 +31,7 @@
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware redis --check replication` |
+| 检查命令 | `bianque redis check -n {namespace} -i {instance} -t {type} -v true` |
 | 检查内容 | replication offset 差异 |
 
 **关注指标**：
@@ -44,7 +44,7 @@
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware redis --check replication`（含持久化检查） |
+| 检查命令 | `bianque redis check -n {namespace} -i {instance} -t {type} -v true`（含持久化检查） |
 | 检查内容 | RDB/AOF 最后保存时间及状态 |
 
 **关注指标**：
@@ -57,7 +57,7 @@
 | 项目 | 说明 |
 |------|------|
 | 数据来源 | 扁鹊 |
-| 检查命令 | `bianque diagnose --middleware redis --check replication` |
+| 检查命令 | `bianque redis check -n {namespace} -i {instance} -t {type} -v true` |
 | 检查内容 | Sentinel 选举记录、Failover 日志 |
 
 **关注指标**：

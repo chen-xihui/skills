@@ -35,6 +35,9 @@ cmd = "paas-cli es info --project " + user_input + " --env " + env_input
 | mode | 枚举值：standalone / sentinel / cluster | `cluster` ✅ | `cluster; ls` ❌ |
 | alias | 字母、数字、短横线、下划线 | `log-alias` ✅ | `$(whoami)` ❌ |
 | policy | 枚举值：noeviction / allkeys-lru / volatile-lru 等 | `allkeys-lru` ✅ | `allkeys-lru && echo hack` ❌ |
+| namespace | 仅允许小写字母、数字、短横线 | `myns` ✅ | `myns; ls` ❌ |
+| instance | 仅允许字母、数字、短横线 | `myes` ✅ | `myes && cat` ❌ |
+| type | 枚举值：cluster / sentinel | `cluster` ✅ | `cluster; rm` ❌ |
 
 ### 1.3 危险字符过滤
 
