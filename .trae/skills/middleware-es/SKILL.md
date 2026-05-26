@@ -1,6 +1,6 @@
 ---
 name: "middleware-es"
-version: "1.0.0"
+version: "1.3.0"
 description: "Elasticsearch中间件技能，提供客户端创建、代码优化检查、集群操作、故障排查和服务接入指引能力。触发词：ES、Elasticsearch、搜索引擎、索引、搜索、Elastic"
 ---
 
@@ -10,7 +10,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 本 Skill 为 Elasticsearch 中间件提供五项标准化能力：
 
-1. **客户端创建与配置**：根据参数自动生成 ES 客户端代码和配置文件，支持 Java（新版 ElasticsearchClient 8.x+ / 旧版 RestHighLevelClient 7.x）、Go、Python
+1. **客户端创建与配置**：根据参数自动生成 ES 客户端代码和配置文件，支持 Java（新版 ElasticsearchClient 8.x+ / 旧版 RestHighLevelClient 7.x）、Go、Python、Node.js
 2. **代码优化检查**：扫描项目代码，按 8 条规则清单逐项检查 ES 使用规范性
 3. **集群交互**：通过 paas-cli 执行 ES 集群查询和运维操作，含风险分级确认机制
 4. **故障排查**：通过扁鹊平台和 paas-cli 诊断 ES 集群异常，支持降级方案
@@ -77,7 +77,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | auth_pass | string | 是 | — | ES 密码 |
 | target_path | string | 是 | — | 代码生成目标路径 |
 | client_version | enum | 否 | new | 客户端版本：new（ElasticsearchClient / 8.x+）/ old（RestHighLevelClient / 7.x） |
-| language | enum | 否 | Java | 项目语言：Java / Go / Python |
+| language | enum | 否 | Java | 项目语言：Java / Go / Python / Node.js |
 
 ### 处理流程
 
@@ -97,7 +97,8 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    | Java + new | ElasticsearchConfig.java、EsDocumentService.java、application.yml |
    | Java + old | EsRestHighLevelConfig.java、EsDocumentService.java、application.yml |
    | Go | es_client.go、config.yaml |
-   | Python | es_client.py、config.yaml |
+   | Python | es_client.py、config.py |
+   | Node.js | elasticsearch_client.js、config.js |
 
 4. **文件写入**：将生成的代码写入 `target_path` 指定目录
 5. **依赖提示**：列出需要添加的依赖
@@ -105,6 +106,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    - **Java + old**：`org.elasticsearch.client:elasticsearch-rest-high-level-client:7.x.x`
    - **Go**：`go get github.com/elastic/go-elasticsearch/v8` 或 `v7`
    - **Python**：`pip install elasticsearch`
+   - **Node.js**：`npm install @elastic/elasticsearch`
 
 ### 输出格式
 
@@ -436,6 +438,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ## 变更记录
 
+- v1.3.0 (2026-05-25): 修复 Python 生成文件名不一致问题（config.yaml → config.py）；补充 Node.js 语言声明和生成文件表
 - v1.2.0 (2026-05-15): 重构 references 目录结构，将大文件拆分为模块化文件夹（es-audit-rules/、es-client-templates/、es-access-guide/、es-cluster-ops/、es-troubleshooting/），优化 LLM 上下文窗口使用效率
 - v1.1.0 (2026-05-12): 新增服务接入指引能力，涵盖设计、开发、测试、上线全生命周期指导
 - v1.0.0 (2026-05-11): 初始版本，包含客户端创建与配置、代码优化检查、集群交互、故障排查四项基础能力
