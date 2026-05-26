@@ -81,7 +81,7 @@
 Qoder 将创建：
 
 ```
-.trae/skills/
+skills/
  ├── middleware/
  │   └── SKILL.md
  ├── middleware-nacos/
@@ -90,9 +90,19 @@ Qoder 将创建：
  ├── middleware-redis/
  │   ├── SKILL.md
  │   └── references/
- └── middleware-es/
-     ├── SKILL.md
-     └── references/
+ ├── middleware-es/
+ │   ├── SKILL.md
+ │   └── references/
+ ├── paas-cli/              # Mock 运维 CLI + SKILL.md
+ │   ├── paas-cli.py
+ │   ├── config/
+ │   └── references/
+ ├── bianque/               # Mock 诊断 CLI + SKILL.md
+ │   ├── bianque.py
+ │   └── references/
+ └── _shared-references/
+     ├── cli-tooling.md
+     └── cli-security-rules.md
 ```
 
 ### 2.2 使用 /create-skill 初始化
@@ -286,7 +296,7 @@ SKILL.md 中仅引用规则文件并定义检查流程和输出格式。"
 
 ```
 对话示例：
-"检查 paas-cli 是否可用：执行 paas-cli --version"
+"按 paas-cli Skill 解析 $PAAS_CLI 后执行 $PAAS_CLI version"
 ```
 
 如不可用，Phase 2 的开发仍可进行（编写 Skill 内容），但验证需在 paas-cli 可用环境中进行。
@@ -306,7 +316,7 @@ SKILL.md 中仅引用规则文件并定义检查流程和输出格式。"
 建议创建共享 references：
 
 ```
-.trae/skills/_shared-references/
+skills/_shared-references/
  └── cli-security-rules.md     # 命令注入防护规则（三个 Skill 共用）
 ```
 
@@ -385,7 +395,7 @@ middleware-nacos/references/nacos-cluster-ops.md。"
 
 ```
 对话示例：
-"在项目中创建 .trae/knowledge/ 目录结构，
+"在项目中创建 knowledge/ 目录结构，
 包含 middleware-standards/、incident-records/、runbooks/ 三个子目录。
 先创建一个空的 nacos-standard.md 模板文件。"
 ```
@@ -395,7 +405,7 @@ middleware-nacos/references/nacos-cluster-ops.md。"
 ```
 对话示例：
 "将企业 Nacos 标准规范的关键要点整理到
-.trae/knowledge/middleware-standards/nacos-standard.md 中，
+knowledge/middleware-standards/nacos-standard.md 中，
 按配置规范、服务注册规范、客户端规范三个分类组织。
 每个规范条目标明编号，便于代码审计时引用。"
 ```
@@ -405,7 +415,7 @@ middleware-nacos/references/nacos-cluster-ops.md。"
 ```
 对话示例：
 "在 middleware-nacos/SKILL.md 的代码优化检查章节中，
-添加知识库引用指引：审计时先读取 .trae/knowledge/middleware-standards/nacos-standard.md，
+添加知识库引用指引：审计时先读取 knowledge/middleware-standards/nacos-standard.md，
 除了按 SKILL.md 中的规则清单检查外，还参照知识库中的完整规范进行扩展检查。
 输出中增加'参考依据'字段，引用知识库中的具体编号。"
 ```
@@ -481,7 +491,7 @@ Skill 修改后，验证未破坏已有功能：
 建议在项目中维护一个简单的验证记录文件：
 
 ```
-.trae/skills/_test-records/
+skills/_test-records/
  ├── nacos-client-gen.md       # Nacos 客户端生成验证记录
  ├── nacos-code-audit.md       # Nacos 代码审计验证记录
  ├── redis-client-gen.md       # ...
@@ -522,8 +532,8 @@ Skill 修改后，验证未破坏已有功能：
 | 方式 | 命令 |
 |------|------|
 | 一键安装 | `npx skills add <org>/middleware-skills/middleware-nacos` |
-| Git 子模块 | `git submodule add <repo-url> .trae/skills-external/middleware-skills` |
-| 手动复制 | 将 SKILL.md 复制到 `.trae/skills/middleware-nacos/` |
+| Git 子模块 | `git submodule add <repo-url> skills-external/middleware-skills` |
+| 手动复制 | 将 SKILL.md 复制到 `skills/middleware-nacos/` |
 
 ---
 
@@ -536,7 +546,7 @@ Skill 修改后，验证未破坏已有功能：
 **排查**：
 
 1. 检查 SKILL.md 的 `description` 字段是否包含触发关键词（如 "Nacos"、"代码优化检查"）
-2. 确认 SKILL.md 文件位于 `.trae/skills/middleware-nacos/` 目录下
+2. 确认 SKILL.md 文件位于 `skills/middleware-nacos/` 目录下
 3. 尝试使用斜杠命令强制触发：`/middleware-nacos`
 
 **修复**：
@@ -562,7 +572,7 @@ Skill 修改后，验证未破坏已有功能：
 ```
 对话示例：
 "将需求文档第 4.3 节的四种输出格式模板提取到
-.trae/skills/_shared-references/output-formats.md 中，
+skills/_shared-references/output-formats.md 中，
 然后更新三个 Skill 的 SKILL.md，统一引用该文件"
 ```
 
@@ -591,8 +601,8 @@ SKILL.md 中只保留流程指引和 references 引用"
 
 **排查步骤**：
 
-1. 确认 paas-cli 已安装：`paas-cli --version`
-2. 确认网络连通：`paas-cli ping`
+1. 按 paas-cli Skill 解析 `$PAAS_CLI` 后执行 `$PAAS_CLI version`
+2. 确认网络连通：`$PAAS_CLI ping`
 3. 确认项目组权限：`paas-cli auth check --project j036x0`
 4. 检查参数是否包含特殊字符（被安全规则拦截）
 

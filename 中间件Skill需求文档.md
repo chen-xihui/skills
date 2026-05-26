@@ -134,7 +134,7 @@
 ### 3.3 Skill 文件组织结构
 
 ```
-.trae/skills/
+skills/
  ├── middleware/SKILL.md          # 通用中间件入口 Skill（路由层）
  ├── middleware-nacos/SKILL.md    # Nacos 专项 Skill
  ├── middleware-redis/SKILL.md    # Redis 专项 Skill
@@ -729,11 +729,11 @@ Skill 在执行需要外部工具的操作前，应先进行前置条件检查�
 
 ```markdown
 ### 前置条件检查流程
-1. 检查 paas-cli 是否可用：执行 `paas-cli --version`
-   - 失败 → 提示用户安装 paas-cli，并提供安装文档链接
-2. 检查 bianque 是否可用：执行 `bianque --version`
-   - 失败 → 提示用户安装 bianque CLI，本次操作降级为仅 paas-cli
-3. 检查网络连通性：执行 `paas-cli ping`
+1. 按 **paas-cli Skill** 解析 `$PAAS_CLI`，执行 `$PAAS_CLI version`（步骤 1：`paas-cli version`；降级：`python3 skills/paas-cli/paas-cli.py version`）
+   - 失败 → 提示遵循 paas-cli Skill，勿继续
+2. 按 **bianque Skill** 解析 `$BIANQUE`，执行 `$BIANQUE version`（步骤 1：`bianque version`；降级：`python3 skills/bianque/bianque.py version`）
+   - 失败 → 本次操作降级为仅 paas-cli
+3. 检查网络连通性：执行 `$PAAS_CLI ping`
    - 失败 → 提示用户检查网络连接
 ```
 
@@ -795,7 +795,7 @@ Skill 在执行需要外部工具的操作前，应先进行前置条件检查�
 
    ```
    知识库文件组织：
-   .trae/knowledge/
+   knowledge/
     ├── middleware-standards/          # 中间件规范文档
     │   ├── nacos-standard.md
     │   ├── redis-standard.md
@@ -1087,13 +1087,14 @@ middleware-skills/                        # Skill 分发仓库根目录
  └── README.md                            # 仓库说明（安装方式、版本列表）
 ```
 
-> **关于目录路径的说明**：分发仓库内部使用 `skills/` 作为 Skill 源码目录（简洁直观）。安装到用户项目后，Skill 文件会被放置到 `.trae/skills/` 目录下——这是 Qoder IDE 的约定路径，智能体从该路径自动发现和加载 Skill，类似于 VS Code 使用 `.vscode/`、GitHub 使用 `.github/` 的惯例。两个路径的对应关系如下：
+> **关于目录路径的说明**：本仓库以项目根目录 **`skills/`** 作为 Skill 与 Mock CLI 的统一根路径（已移除历史 `.trae/` 目录）。集成到其他项目时：可将本仓库作为子模块，或将 `skills/` 复制/链接到目标项目的 `skills/` 或 **Cursor** 的 `.cursor/skills/`。对应关系如下：
 >
-> | 分发仓库路径 | 安装后用户项目路径 | 说明 |
-> |-------------|-------------------|------|
-> | `skills/middleware/` | `.trae/skills/middleware/` | IDE 自动扫描 |
-> | `skills/middleware-nacos/` | `.trae/skills/middleware-nacos/` | IDE 自动扫描 |
-> | `knowledge/` | `.trae/knowledge/` | RAG 知识库（Phase 4） |
+> | 本仓库路径 | 集成到业务项目 | 说明 |
+> |-------------|----------------|------|
+> | `skills/middleware/` | `skills/middleware/` 或 `.cursor/skills/middleware/` | 入口 Skill |
+> | `skills/middleware-nacos/` | 同上 | Nacos 专项 |
+> | `skills/paas-cli/`、`skills/bianque/` | 同上 | Mock CLI 与工具 Skill |
+> | `knowledge/`（Phase 4） | `knowledge/` | RAG 知识库（可选） |
 
 ### 12.2 安装方式
 
@@ -1114,7 +1115,7 @@ npx skills add <org>/middleware-skills/middleware-es
 npx skills add <org>/middleware-skills/middleware-redis
 ```
 
-安装后 Skill 文件会被放入项目 `.trae/skills/` 目录下（Qoder IDE 约定路径），智能体自动识别并加载。
+安装后 Skill 文件放入目标项目的 `skills/` 或 `.cursor/skills/`，由 IDE / Agent 发现与加载。
 
 #### 12.2.2 Git 子模块集成（团队项目）
 
@@ -1122,15 +1123,15 @@ npx skills add <org>/middleware-skills/middleware-redis
 
 ```bash
 # 添加子模块
-git submodule add <repo-url> .trae/skills-external/middleware-skills
+git submodule add <repo-url> skills-external/middleware-skills
 
-# 在 .trae/skills/ 中创建符号链接
+# 在 skills/ 中创建符号链接
 # Windows
-mklink /D ".trae\skills\middleware" ".trae\skills-external\middleware-skills\skills\middleware"
-mklink /D ".trae\skills\middleware-nacos" ".trae\skills-external\middleware-skills\skills\middleware-nacos"
+mklink /D "skills\middleware" "skills-external\middleware-skills\skills\middleware"
+mklink /D "skills\middleware-nacos" "skills-external\middleware-skills\skills\middleware-nacos"
 # Linux/macOS
-ln -s ../skills-external/middleware-skills/skills/middleware .trae/skills/middleware
-ln -s ../skills-external/middleware-skills/skills/middleware-nacos .trae/skills/middleware-nacos
+ln -s ../skills-external/middleware-skills/skills/middleware skills/middleware
+ln -s ../skills-external/middleware-skills/skills/middleware-nacos skills/middleware-nacos
 ```
 
 **优势**：
@@ -1140,12 +1141,12 @@ ln -s ../skills-external/middleware-skills/skills/middleware-nacos .trae/skills/
 
 #### 12.2.3 手动复制
 
-面向离线或临时使用场景，直接将 SKILL.md 文件复制到项目的 `.trae/skills/` 目录下：
+面向离线或临时使用场景，直接将 SKILL.md 文件复制到项目的 `skills/` 目录下：
 
 ```bash
 # 从仓库下载或复制文件
-mkdir -p .trae/skills/middleware-nacos
-cp SKILL.md .trae/skills/middleware-nacos/
+mkdir -p skills/middleware-nacos
+cp SKILL.md skills/middleware-nacos/
 ```
 
 **局限**：无自动更新能力，需手动跟踪版本变更。
@@ -1155,15 +1156,13 @@ cp SKILL.md .trae/skills/middleware-nacos/
 企业内部可能需要对标准 Skill 进行定制（如修改检查规则、添加内部命令模板）。为避免定制内容在 Skill 更新时被覆盖，采用分层覆盖机制：
 
 ```
-.trae/
- ├── skills/                    # 标准 Skill（只读，更新时覆盖）
- │   ├── middleware-nacos/
- │   │   └── SKILL.md            # 标准版本
- │   └── ...
- └── skills-custom/             # 定制 Skill（用户自定义，不会被覆盖）
-     ├── middleware-nacos/
-     │   └── SKILL.md            # 定制版本（覆盖标准版本）
-     └── ...
+skills/                        # 标准 Skill（更新时覆盖）
+ ├── middleware-nacos/
+ │   └── SKILL.md               # 标准版本
+ └── ...
+skills-custom/                 # 定制 Skill（用户自定义，不会被覆盖）
+ └── middleware-nacos/
+     └── SKILL.md               # 定制版本（优先于标准版本）
 ```
 
 **覆盖规则**：
@@ -1257,9 +1256,9 @@ npx skills add <org>/middleware-skills/middleware-nacos --force
 **Git 子模块方式**：
 ```bash
 # 更新子模块到最新版本
-git submodule update --remote .trae/skills-external/middleware-skills
+git submodule update --remote skills-external/middleware-skills
 # 或锁定到指定版本
-cd .trae/skills-external/middleware-skills
+cd skills-external/middleware-skills
 git checkout v1.2.0
 ```
 

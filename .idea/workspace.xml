@@ -1,14 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ebf2ac43-f60a-4daa-b450-8348979aca47" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.trae/nacos-es-redis-全量命令文档.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/skill.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/skill.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/nacos-es-redis-全量命令文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/nacos-es-redis-全量命令文档.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/_shared-references/cli-security-rules.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/_shared-references/cli-security-rules.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/SKILL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-access-guide/design.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-access-guide/design.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-access-guide/development.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-access-guide/development.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-access-guide/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-access-guide/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-access-guide/launch.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-access-guide/launch.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-access-guide/testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-access-guide/testing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-001.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-001.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-002.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-002.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-003.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-003.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-004.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-004.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-005.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-005.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-006.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-006.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-007.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-007.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/ES-008.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/ES-008.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-audit-rules/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-audit-rules/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-client-templates/go.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-client-templates/go.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-client-templates/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-client-templates/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-client-templates/java-new.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-client-templates/java-new.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-client-templates/java-old.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-client-templates/java-old.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-client-templates/nodejs.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-client-templates/nodejs.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-client-templates/python.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-client-templates/python.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-cluster-ops/cluster.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-cluster-ops/cluster.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-cluster-ops/config.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-cluster-ops/config.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-cluster-ops/discovery.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-cluster-ops/discovery.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-cluster-ops/index-mgmt.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-cluster-ops/index-mgmt.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-cluster-ops/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-cluster-ops/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-cluster-ops/scaling.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-cluster-ops/scaling.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-troubleshooting/capabilities.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-troubleshooting/capabilities.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-troubleshooting/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-troubleshooting/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/references/es-troubleshooting/scenarios.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/references/es-troubleshooting/scenarios.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-es/命令速查手册.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/命令速查手册.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/SKILL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-001.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-001.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-002.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-002.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-003.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-003.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-004.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-004.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-005.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-005.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-006.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-006.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/NACOS-007.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/NACOS-007.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-audit-rules/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-audit-rules/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-client-templates/go.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-client-templates/go.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-client-templates/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-client-templates/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-client-templates/java.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-client-templates/java.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-client-templates/python.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-client-templates/python.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/备份与恢复.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/备份与恢复.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/实例参数.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/实例参数.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/扩缩容与资源.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/扩缩容与资源.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/网络与访问控制.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/网络与访问控制.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/访问令牌与监控.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/访问令牌与监控.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-cluster-ops/集群管理.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-cluster-ops/集群管理.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/常见故障场景.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/常见故障场景.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/扁鹊命令参考.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/扁鹊命令参考.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/诊断报告模板.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/诊断报告模板.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/诊断流程.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/诊断流程.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/诊断能力.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/诊断能力.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/references/nacos-troubleshooting/降级方案.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/nacos-troubleshooting/降级方案.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-nacos/命令速查手册.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/命令速查手册.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/SKILL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-access-guide/design.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-access-guide/design.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-access-guide/development.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-access-guide/development.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-access-guide/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-access-guide/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-access-guide/launch.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-access-guide/launch.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-access-guide/testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-access-guide/testing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-001.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-001.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-002.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-002.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-003.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-003.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-004.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-004.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-005.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-005.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-006.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-006.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-007.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-007.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-008.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-008.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-009.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-009.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-010.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-010.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-011.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-011.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-012.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-012.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-013.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-013.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/REDIS-014.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/REDIS-014.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-audit-rules/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-audit-rules/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-client-templates/go.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-client-templates/go.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-client-templates/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-client-templates/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-client-templates/java.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-client-templates/java.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-client-templates/python.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-client-templates/python.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-cluster-ops/advanced-strategy.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-cluster-ops/advanced-strategy.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-cluster-ops/cluster.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-cluster-ops/cluster.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-cluster-ops/federated.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-cluster-ops/federated.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-cluster-ops/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-cluster-ops/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-cluster-ops/master-slave.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-cluster-ops/master-slave.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-cluster-ops/sentinel.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-cluster-ops/sentinel.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-troubleshooting/diagnosis.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-troubleshooting/diagnosis.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-troubleshooting/disaster-recovery.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-troubleshooting/disaster-recovery.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-troubleshooting/fault-tolerance.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-troubleshooting/fault-tolerance.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-troubleshooting/index.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-troubleshooting/index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-troubleshooting/scenarios.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-troubleshooting/scenarios.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/references/redis-troubleshooting/test-cases.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/references/redis-troubleshooting/test-cases.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware-redis/命令速查手册.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/命令速查手册.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/skills/middleware/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware/SKILL.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/USAGE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/bianque/bianque.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/bianque/bianque.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/es/iteration-elasticsearch-cluster-replicas-update.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/es/iteration-elasticsearch-clusterIP.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/es/iteration-elasticsearch-index-template.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/es/iteration-elasticsearch-index.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/es/iteration-elasticsearch-lb.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/gateway.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-access-token-create.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-access-token-delete.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-access-token-get.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-backup-create.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-backup-get.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-monitor-get.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-monitor-update.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-network-policy-create.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-network-policy-delete.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-network-policy-get.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-network-policy-update.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/nacos/iteration-nacos-cluster-restore.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/redis/ncractivestrategy.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/redis/ncrhotbackupstrategy.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/config/redis/ncrunitstrategy.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/paas-cli.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.trae/tools/paas-cli/paas-cli.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/中间件Skill开发流程指南.md" beforeDir="false" afterPath="$PROJECT_DIR$/中间件Skill开发流程指南.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/中间件Skill需求精简版.md" beforeDir="false" afterPath="$PROJECT_DIR$/中间件Skill需求精简版.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../gopath/pkg/mod/golang.org/toolchain@v0.0.1-go1.25.0.darwin-arm64" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -18,28 +151,84 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 8
+}]]></component>
   <component name="ProjectId" id="3Dc17kGGYHkXg2JvLaO4Jf9frcC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="go.import.settings.migrated" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.trae" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "master",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/Users/zhangjin/code/go/skills",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\work\需求\skill\.trae" />
     </key>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-d297c17c1fbd-57c114c3cede-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-243.26574.98" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-GO-243.26574.98" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="1bc9deec-aae4-4447-b74b-69a67e3706fe" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="1bc9deec-aae4-4447-b74b-69a67e3706fe">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VgoProject">
-    <integration-enabled>true</integration-enabled>
+    <settings-migrated>true</settings-migrated>
   </component>
 </project>

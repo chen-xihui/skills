@@ -27,11 +27,13 @@
 
 **Skill 文件结构**：
 ```
-.trae/skills/
+skills/
  ├── middleware/SKILL.md          # 通用入口（路由层）
  ├── middleware-nacos/SKILL.md    # Nacos 专项
  ├── middleware-redis/SKILL.md    # Redis 专项
- └── middleware-es/SKILL.md       # ES 专项
+ ├── middleware-es/SKILL.md       # ES 专项
+ ├── paas-cli/SKILL.md            # 运维 CLI 工具说明
+ └── bianque/SKILL.md             # 诊断 CLI 工具说明
 ```
 
 ---
@@ -85,12 +87,12 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| auth_user | 是 | — | 用户名 |
-| auth_pass | 是 | — | 密码 |
 | target_path | 是 | — | 生成路径 |
 | language | 否 | Java | Java/Go/Python |
 
-流程：参数收集 → `paas-cli nacos config` 获取地址 → 按语言生成代码（Java: NacosConfigService/NacosDiscoveryService/bootstrap.yml; Go/Python: 对应文件）→ 写入 → 依赖提示
+平台字段（CLI，禁止用户覆盖）：`server_addr`、`namespace` 来自 `nacos config`；`auth_user` 来自 `nacos config` 的 `Username`；密码仅用 `${NACOS_PASSWORD}`（CLI 脱敏，不向用户索要明文）
+
+流程：参数收集 → `paas-cli auth check`（阻塞）→ `paas-cli nacos config` 拉连接信息与用户名 → 按语言生成代码 → 写入 → 依赖提示
 
 ### 4.2 代码审计规则
 
@@ -260,10 +262,12 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 
 | 工具 | 调用方式 | 超时 | 降级方案 |
 |------|---------|------|---------|
-| paas-cli | 终端命令执行 | 30s | 提示安装/检查网络 |
+| paas-cli Skill | 遵循 `skills/paas-cli/SKILL.md` 编排 `$PAAS_CLI` 后终端执行 | 30s | 提示查阅 paas-cli Skill / 检查网络 |
 | 扁鹊 | `bianque diagnose --middleware {type} --project {pid} --env {env} --check {items}` | 60s | 回退到 paas-cli 基本查询 |
 
-**前置检查**：`paas-cli --version` → `bianque --version` → `paas-cli ping`
+**CLI 委托**：中间件 Skill 须先遵循 **paas-cli Skill**（见 `paas-cli-skill-delegation.md`）。`$PAAS_CLI` 解析顺序：① `paas-cli version` 成功 → ② 降级 `python3 skills/paas-cli/paas-cli.py version`
+
+**前置检查**：解析 `$PAAS_CLI` → `$PAAS_CLI version` → `$BIANQUE`（如需，见 bianque Skill：`bianque version`）→ `$PAAS_CLI ping`
 
 ---
 
@@ -296,13 +300,13 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 
 ## 11. 分发策略
 
-**仓库路径映射**：分发仓库 `skills/` → 安装目标 `.trae/skills/`（Qoder IDE 约定）
+**仓库路径映射**：本仓库根目录 `skills/` 即为 Skill 与 CLI 安装路径；集成到其他项目时可复制到其 `skills/` 或 Cursor `.cursor/skills/`
 
 | 安装方式 | 命令/操作 | 适用场景 |
 |---------|----------|---------|
 | 一键安装 | `npx skills add <org>/middleware-skills/middleware-nacos` | 个人开发者 |
-| Git 子模块 | `git submodule add <repo-url> .trae/skills-external/middleware-skills` + 符号链接 | 团队协作 |
-| 手动复制 | 复制 SKILL.md 到 `.trae/skills/` | 离线/临时 |
+| Git 子模块 | `git submodule add <repo-url> skills-external/middleware-skills` + 符号链接 | 团队协作 |
+| 手动复制 | 复制 SKILL.md 到 `skills/` | 离线/临时 |
 
 **定制覆盖**：`skills-custom/` 优先于 `skills/`，同名 Skill 覆盖标准版本
 
