@@ -1,6 +1,6 @@
 # Python + elasticsearch 模板
 
-## elasticsearch_client.py
+## es_client.py
 
 ```python
 import json

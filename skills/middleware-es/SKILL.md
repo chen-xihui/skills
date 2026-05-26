@@ -83,7 +83,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | auth_pass | string | 是 | — | ES 密码 |
 | target_path | string | 是 | — | 代码生成目标路径 |
 | client_version | enum | 否 | new | 客户端版本：new（ElasticsearchClient / 8.x+）/ old（RestHighLevelClient / 7.x） |
-| language | enum | 否 | Java | 项目语言：Java / Go / Python |
+| language | enum | 否 | Java | 项目语言：Java / Go / Python / Node.js |
 
 ### 处理流程
 
@@ -103,7 +103,8 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    | Java + new | ElasticsearchConfig.java、EsDocumentService.java、application.yml |
    | Java + old | EsRestHighLevelConfig.java、EsDocumentService.java、application.yml |
    | Go | es_client.go、config.yaml |
-   | Python | es_client.py、config.yaml |
+   | Python | es_client.py、config.py |
+   | Node.js | elasticsearch_client.js、config.js |
 
 4. **文件写入**：将生成的代码写入 `target_path` 指定目录
 5. **依赖提示**：列出需要添加的依赖
@@ -111,6 +112,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
    - **Java + old**：`org.elasticsearch.client:elasticsearch-rest-high-level-client:7.x.x`
    - **Go**：`go get github.com/elastic/go-elasticsearch/v8` 或 `v7`
    - **Python**：`pip install elasticsearch`
+   - **Node.js**：`npm install @elastic/elasticsearch`
 
 ### 输出格式
 
@@ -133,7 +135,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 
 ### 异常处理
 
-- paas-cli Skill 命令执行失败 → 提示用户遵循 paas-cli Skill 并完成 `$PAAS_CLI` 解析及网络连通性，改为手动输入 ES 地址
+- paas-cli 命令执行失败 → 提示用户检查 paas-cli 是否安装及网络连通性，改为手动输入 ES 地址
 - 目标路径不存在 → 询问用户是否创建目录
 - 文件已存在 → 询问用户是否覆盖
 
@@ -268,14 +270,14 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 状态：✅ 成功 / ❌ 失败
 
 📊 返回信息：
-{paas-cli Skill / `$PAAS_CLI` 命令输出内容}
+{paas-cli 命令输出内容}
 
 ⏱️ 执行耗时：{N}秒
 ```
 
 ### 异常处理
 
-- paas-cli Skill 不可用（`$PAAS_CLI` 解析失败） → 提示安装方式
+- paas-cli 未安装 → 提示安装方式
 - 命令执行超时 → 提示用户检查网络，建议加 `--timeout` 参数重试
 - 权限不足 → 提示用户联系管理员授权
 - 参数包含危险字符 → 拒绝执行并提示用户
