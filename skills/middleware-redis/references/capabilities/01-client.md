@@ -14,26 +14,42 @@
 |------|------|------|--------|------|
 | project_id | string | 是 | — | 项目组编号 |
 | env | enum | 是 | — | 环境：DEV / SIT / SRV |
-| password | string | 是 | — | Redis 密码 |
 | target_path | string | 是 | — | 代码生成目标路径 |
-| mode | enum | 否 | standalone | 部署模式：standalone / sentinel / cluster |
+| mode | enum | 否 | — | 部署模式提示：standalone / sentinel / cluster；**最终以 CLI 输出为准** |
 | client_type | enum | 否 | lettuce | 客户端库：jedis / lettuce（仅 Java） |
 | language | enum | 否 | Java | 项目语言：Java / Go / Python |
 
+**平台拉取字段（禁止向用户索要或覆盖）**：
+
+| 字段 | 来源 | 说明 |
+|------|------|------|
+| mode | `$PAAS_CLI redis config` 输出 `Mode` | 决定 Standalone/Sentinel/Cluster 模板；**不得以用户口述覆盖 CLI** |
+| endpoints | `$PAAS_CLI redis config` 输出 `Endpoints` | 写入配置或 `${REDIS_ENDPOINTS}` / 各节点占位符 |
+| master_name | `$PAAS_CLI redis config` 输出 `Master Name`（Sentinel） | 仅 Sentinel 模式使用 |
+| database | `$PAAS_CLI redis config` 输出 `Database` | 写入配置默认值 |
+
+**密码**：`$PAAS_CLI redis config` 仅返回脱敏密码（如 `********`），**不得**向用户索要明文密码写入代码；生成物统一使用 `${REDIS_PASSWORD}`，由用户通过环境变量或密钥系统注入。
+
 ### 处理流程
 
-1. **参数收集**：确认所有必要参数，缺失项主动询问用户。特别注意 `mode` 参数：
-   - standalone：单机模式
-   - sentinel：哨兵模式（高可用）
-   - cluster：集群模式（分片）
-   - 如用户不确定，提示："如果 Redis 只有一个节点选 standalone；有哨兵选 sentinel；有多分片选 cluster"
-2. **环境信息查询**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 命令获取 Redis 连接信息
+1. **参数收集**：确认 `project_id`、`env`、`target_path`、`language`、`client_type`；`mode` 可选，用于向用户澄清部署形态，缺失时不主动索要密码
+2. **前置检查（阻塞，须全部成功后才可继续）**：
+   - **遵循 paas-cli Skill**：按 `skills/paas-cli/SKILL.md` 完成 `$PAAS_CLI` 解析
+   - `$PAAS_CLI version`、`$PAAS_CLI ping`
+   - **校验项目组授权（必须）**：
+     ```
+     $PAAS_CLI auth check --project {project_id}
+     ```
+     - 授权失败 → **终止流程**，不生成客户端代码
+3. **平台连接信息拉取（阻塞）**：
    ```
    $PAAS_CLI redis config --project {project_id} --env {env}
    ```
-   - 如 paas-cli Skill 下 `$PAAS_CLI` 执行失败，提示用户检查安装及网络连通性，改为手动输入 Redis 地址
-3. **代码生成**：根据参数组合选择对应模板
-    > 详细代码模板参见 `references/redis-client-templates/` 目录
+   - 若用户已明确 `mode`，可在命令中附加 `--mode {mode}` 供平台查询；**生成代码时仍以 CLI 返回的 `Mode` 为准**
+   - 解析并锁定：`Mode`、`Endpoints`、（Sentinel 时）`Master Name`、`Database`
+   - 在对话中完整展示 CLI 命令及解析结果
+4. **代码生成**：按 CLI 确定的 `mode` 与 `language`/`client_type` 选择模板
+   > 详细代码模板参见 `references/redis-client-templates/` 目录
 
    | 组合 | 生成文件 |
    |------|---------|
@@ -44,36 +60,38 @@
    | Go | redis_client.go、config.yaml |
    | Python | redis_client.py、config.yaml |
 
-4. **文件写入**：将生成的代码写入 `target_path` 指定目录
-5. **依赖提示**：列出需要添加的依赖
-   - **Java + Lettuce**：`io.lettuce:lettuce-core`、`org.springframework.boot:spring-boot-starter-data-redis`
-   - **Java + Jedis**：`redis.clients:jedis`、`org.springframework.boot:spring-boot-starter-data-redis`
-   - **Go**：`github.com/redis/go-redis/v9`
-   - **Python**：`pip install redis`
+5. **文件写入**：将生成的代码写入 `target_path`
+6. **依赖提示**：列出需要添加的依赖（Lettuce/Jedis/Go/Python，见模板索引）
 
 ### 输出格式
 
 ```
 ✅ 客户端代码已生成
 
+🔐 平台信息（来源：paas-cli Skill）：
+  - 授权检查：`$PAAS_CLI auth check` --project {project_id} — ✅ 通过
+  - 连接配置：`$PAAS_CLI redis config` --project {project_id} --env {env}
+  - Mode / Endpoints / Database：{mode} / {endpoints} / {database}
+
 📁 生成文件列表：
   - {文件路径1} — {文件说明}
-  - {文件路径2} — {文件说明}
 
 📝 后续步骤：
   1. 添加依赖：{依赖信息}
-  2. 配置环境变量：REDIS_PASSWORD={实际密码}
-  3. 根据实际环境调整连接池参数
+  2. 配置环境变量：REDIS_PASSWORD（及模板中的 REDIS_ENDPOINTS 等）
+  3. 确认部署模式与平台 Mode 一致后启动验证
 
 ⚠️ 注意事项：
-  - 密码以 ${REDIS_PASSWORD} 占位符形式写入，请通过环境变量或密钥管理系统注入实际值
-  - 当前生成的是 {mode} 模式客户端，请确认与实际部署模式一致
+  - 连接信息与 Mode 以平台 CLI 返回为准
+  - 密码以 ${REDIS_PASSWORD} 占位符写入，勿写入明文
 ```
 
 ### 异常处理
 
-- paas-cli Skill 命令执行失败 → 提示用户遵循 paas-cli Skill 并完成 `$PAAS_CLI` 解析及网络连通性，改为手动输入 Redis 地址
-- 目标路径不存在 → 询问用户是否创建目录
-- 文件已存在 → 询问用户是否覆盖
+- `$PAAS_CLI auth check` 失败或未授权 → **终止**，不生成代码
+- `$PAAS_CLI redis config` 失败 → 提示遵循 **paas-cli Skill**；**降级**：用户手动提供 endpoints/mode，输出标注「非平台标准流程」；仍不得索要明文密码
+- `$PAAS_CLI version` / `$PAAS_CLI ping` 失败 → 先修复 CLI/网络再执行 `auth check` 与 `redis config`
+- 目标路径不存在 → 询问是否创建目录
+- 文件已存在 → 询问是否覆盖
 
 ---

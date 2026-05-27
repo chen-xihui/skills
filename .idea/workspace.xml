@@ -5,36 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ebf2ac43-f60a-4daa-b450-8348979aca47" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/hooks/shell-guard.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/validate-skills.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/_shared-references/harness-tools.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/_shared-references/middleware-common.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-es/references/capabilities/01-client.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-es/references/capabilities/02-audit.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-es/references/capabilities/03-cluster.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-es/references/capabilities/04-troubleshoot.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-es/references/capabilities/05-access-guide.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/capabilities/01-client.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/capabilities/02-audit.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/capabilities/03-cluster.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-nacos/references/capabilities/04-troubleshoot.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-redis/references/capabilities/01-client.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-redis/references/capabilities/02-audit.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-redis/references/capabilities/03-cluster.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-redis/references/capabilities/04-troubleshoot.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/skills/middleware-redis/references/capabilities/05-access-guide.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/_shared-references/cli-tooling.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/_shared-references/cli-tooling.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/bianque/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/bianque/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/middleware-es/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-es/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/middleware-nacos/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-nacos/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/middleware-redis/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware-redis/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/middleware/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/middleware/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/skills/paas-cli/SKILL.md" beforeDir="false" afterPath="$PROJECT_DIR$/skills/paas-cli/SKILL.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/中间件Skill需求文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/中间件Skill需求文档.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/中间件Skill需求精简版.md" beforeDir="false" afterPath="$PROJECT_DIR$/中间件Skill需求精简版.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

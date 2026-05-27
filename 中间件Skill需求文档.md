@@ -785,32 +785,34 @@ description: "{中间件名称}中间件技能，提供客户端创建、代码�
 |------|------|------|--------|------|
 | project_id | string | 是 | — | 项目组编号 |
 | env | enum | 是 | — | 环境：DEV / SIT / SRV |
-| password | string | 是 | — | Redis 密码 |
 | target_path | string | 是 | — | 代码生成目标路径 |
-| mode | enum | 否 | standalone | 部署模式：standalone / sentinel / cluster |
+| mode | enum | 否 | — | 部署模式提示；**以 CLI `Mode` 为准** |
 | client_type | enum | 否 | lettuce | 客户端库：jedis / lettuce |
 | language | enum | 否 | Java | 项目语言：Java / Go / Python |
 
-**处理流程**：
+**平台字段（禁止用户覆盖）**：`Mode`、`Endpoints`、`Database`（Sentinel 含 `Master Name`）来自 `$PAAS_CLI redis config`；密码仅用 `${REDIS_PASSWORD}`。
 
-1. **参数收集**：确认所有必要参数，缺失项主动询问用户。特别注意 `mode` 参数，不同模式生成不同配置。
-2. **环境信息查询**：通过终端执行 paas-cli 命令获取 Redis 连接信息。
+**处理流程**（与 Nacos 7.1 对齐，详见 `skills/middleware-redis/references/capabilities/01-client.md`）：
+
+1. **参数收集**：确认 `project_id`、`env`、`target_path` 等；**不向用户索要明文密码**。
+2. **前置检查（阻塞）**：`$PAAS_CLI version`、`$PAAS_CLI ping`、`$PAAS_CLI auth check --project {project_id}`。
+3. **平台连接信息拉取（阻塞）**：
    ```
-   paas-cli redis config --project {project_id} --env {env}
+   $PAAS_CLI redis config --project {project_id} --env {env}
    ```
-3. **代码生成**：根据 `language`、`client_type`、`mode` 选择对应模板，生成以下文件：
+4. **代码生成**：根据 CLI 返回的 `Mode` 与 `language`、`client_type` 选择对应模板，生成以下文件：
    - **Java + Lettuce + Standalone**：RedisConfig.java（连接池配置）、RedisService.java（工具类）、application.yml
    - **Java + Jedis + Standalone**：JedisConfig.java、JedisService.java、application.yml
    - **Java + Lettuce + Sentinel**：RedisSentinelConfig.java、RedisService.java、application.yml
    - **Java + Lettuce + Cluster**：RedisClusterConfig.java、RedisService.java、application.yml
    - **Go**：redis_client.go、config.yaml
    - **Python**：redis_client.py、config.yaml
-4. **文件写入**：将生成的代码写入 `target_path` 指定目录。
-5. **依赖提示**：列出需要添加的依赖。
+5. **文件写入**：将生成的代码写入 `target_path` 指定目录。
+6. **依赖提示**：列出需要添加的依赖。
 
-**输出**：按 [6.3.1 客户端生成输出](#631-客户端生成输出) 格式输出。
+**输出**：按 [6.3.1 客户端生成输出](#631-客户端生成输出) 格式输出（含 🔐 平台信息段）。
 
-**异常处理**：同 Nacos 7.1 异常处理逻辑。
+**异常处理**：同 Nacos 7.1（`auth check` 失败终止；`config` 失败可降级，不得索要明文密码）。
 
 ### 8.2 代码优化检查
 
@@ -919,28 +921,31 @@ description: "{中间件名称}中间件技能，提供客户端创建、代码�
 |------|------|------|--------|------|
 | project_id | string | 是 | — | 项目组编号 |
 | env | enum | 是 | — | 环境：DEV / SIT / SRV |
-| auth_user | string | 是 | — | ES 用户名 |
-| auth_pass | string | 是 | — | ES 密码 |
 | target_path | string | 是 | — | 代码生成目标路径 |
-| client_version | enum | 否 | new | 客户端版本：new（ElasticsearchClient / 8.x+）/ old（RestHighLevelClient / 7.x） |
-| language | enum | 否 | Java | 项目语言：Java / Go / Python |
+| client_version | enum | 否 | — | new / old；可参考 CLI `Version` |
+| language | enum | 否 | Java | 项目语言：Java / Go / Python / Node.js |
 
-**处理流程**：
+**平台字段（禁止用户覆盖）**：`Hosts`、`Scheme`、`Username` 来自 `$PAAS_CLI es config`；密码仅用 `${ES_PASSWORD}`。
 
-1. **参数收集**：确认所有必要参数，特别确认 `client_version`（影响生成的 API 风格）。
-2. **环境信息查询**：通过终端执行 paas-cli 命令获取 ES 连接信息。
+**处理流程**（与 Nacos 7.1 对齐，详见 `skills/middleware-es/references/capabilities/01-client.md`）：
+
+1. **参数收集**：确认 `project_id`、`env`、`target_path` 等；**不向用户索要明文密码/用户名**。
+2. **前置检查（阻塞）**：`$PAAS_CLI version`、`$PAAS_CLI ping`、`$PAAS_CLI auth check --project {project_id}`。
+3. **平台连接信息拉取（阻塞）**：
    ```
-   paas-cli es config --project {project_id} --env {env}
+   $PAAS_CLI es config --project {project_id} --env {env}
    ```
-3. **代码生成**：根据参数组合生成文件：
+4. **代码生成**：根据 CLI `Version` 确定 `client_version`（未指定时），按参数组合生成文件：
    - **Java + new**：ElasticsearchConfig.java（客户端 Bean）、EsDocumentService.java（CRUD 工具类）、application.yml
    - **Java + old**：EsRestHighLevelConfig.java、EsDocumentService.java、application.yml
    - **Go**：es_client.go、config.yaml
    - **Python**：es_client.py、config.yaml
-4. **文件写入**：将生成的代码写入 `target_path` 指定目录。
-5. **依赖提示**：列出需要添加的依赖（特别注意新旧版本的 Maven artifact 不同）。
+5. **文件写入**：将生成的代码写入 `target_path` 指定目录。
+6. **依赖提示**：列出需要添加的依赖（特别注意新旧版本的 Maven artifact 不同）。
 
-**输出**：按 [6.3.1 客户端生成输出](#631-客户端生成输出) 格式输出。
+**输出**：按 [6.3.1 客户端生成输出](#631-客户端生成输出) 格式输出（含 🔐 平台信息段）。
+
+**异常处理**：同 Nacos 7.1（`auth check` 失败终止；`config` 失败可降级，不得索要明文密码）。
 
 ### 9.2 代码优化检查
 

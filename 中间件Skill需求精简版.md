@@ -184,14 +184,12 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| auth_user | 是 | — | 用户名 |
-| auth_pass | 是 | — | 密码 |
 | target_path | 是 | — | 生成路径 |
 | language | 否 | Java | Java/Go/Python |
 
-平台字段（CLI，禁止用户覆盖）：`server_addr`、`namespace` 来自 `nacos config`；`auth_user` 来自 `nacos config` 的 `Username`；密码仅用 `${NACOS_PASSWORD}`（CLI 脱敏，不向用户索要明文）
+平台字段（CLI，禁止用户覆盖）：`server_addr`、`namespace`、`Username` 来自 `nacos config`；密码仅用 `${NACOS_PASSWORD}`（CLI 脱敏，不向用户索要明文）
 
-流程：参数收集 → `paas-cli auth check`（阻塞）→ `paas-cli nacos config` 拉连接信息与用户名 → 按语言生成代码 → 写入 → 依赖提示
+流程：参数收集 → `$PAAS_CLI auth check`（阻塞）→ `$PAAS_CLI nacos config` → 按语言生成 → 写入 → 依赖提示
 
 ### 7.2 代码审计规则
 
@@ -234,13 +232,14 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| password | 是 | — | Redis 密码 |
 | target_path | 是 | — | 生成路径 |
-| mode | 否 | standalone | standalone/sentinel/cluster |
+| mode | 否 | — | 部署模式提示；**以 CLI `Mode` 为准** |
 | client_type | 否 | lettuce | jedis/lettuce |
 | language | 否 | Java | Java/Go/Python |
 
-流程：参数收集 → `paas-cli redis config` → 按 mode/client_type/language 组合生成代码 → 写入 → 依赖提示
+平台字段（CLI，禁止用户覆盖）：`Mode`、`Endpoints`、`Database`（Sentinel 含 `Master Name`）来自 `redis config`；密码仅用 `${REDIS_PASSWORD}`
+
+流程：参数收集 → `$PAAS_CLI auth check` → `$PAAS_CLI redis config` → 按 CLI Mode 与 language/client_type 生成 → 写入 → 依赖提示
 
 ### 8.2 代码审计规则
 
@@ -285,13 +284,13 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| auth_user | 是 | — | 用户名 |
-| auth_pass | 是 | — | 密码 |
 | target_path | 是 | — | 生成路径 |
-| client_version | 否 | new | new(ElasticsearchClient 8.x+)/old(RestHighLevelClient 7.x) |
-| language | 否 | Java | Java/Go/Python |
+| client_version | 否 | — | new/old；可参考 CLI `Version` |
+| language | 否 | Java | Java/Go/Python/Node.js |
 
-流程：参数收集 → `paas-cli es config` → 按 client_version/language 生成代码 → 写入 → 依赖提示
+平台字段（CLI，禁止用户覆盖）：`Hosts`、`Scheme`、`Username` 来自 `es config`；密码仅用 `${ES_PASSWORD}`
+
+流程：参数收集 → `$PAAS_CLI auth check` → `$PAAS_CLI es config` → 按 client_version/language 生成 → 写入 → 依赖提示
 
 ### 9.2 代码审计规则
 

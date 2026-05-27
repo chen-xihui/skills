@@ -2,6 +2,8 @@
 
 本目录包含 Elasticsearch 客户端的代码模板，供智能体在执行客户端创建时参考。
 
+**平台字段（能力一）**：生成前须 `$PAAS_CLI auth check`，再 `$PAAS_CLI es config`；`Hosts`、`Scheme`、`Username` 以 CLI 为准；密码仅用 `${ES_PASSWORD}`；`client_version` 可参考 CLI `Version`（≥8 → new，7.x → old）。
+
 ## 模板清单
 
 | 语言/版本 | 详情文件 | 说明 |

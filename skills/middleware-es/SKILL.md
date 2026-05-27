@@ -1,6 +1,6 @@
 ---
 name: middleware-es
-version: "1.5.0"
+version: "1.6.0"
 description: >-
   Creates Elasticsearch clients, audits usage, runs cluster ops via paas-cli
   Skill, troubleshoots with bianque Skill, and provides access guides. Use when
@@ -46,6 +46,7 @@ disable-model-invocation: true
 
 ## 变更记录
 
+- v1.6.0 (2026-05-26): 能力一对齐 Nacos：`auth check` + `es config`；移除用户必填 auth_user/auth_pass
 - v1.5.0 (2026-05-26): ECC 式瘦身——能力拆至 `references/capabilities/`
 - v1.4.0 (2026-05-26): 委托 paas-cli Skill
 - v1.0.0 (2026-05-11): 初始版本
