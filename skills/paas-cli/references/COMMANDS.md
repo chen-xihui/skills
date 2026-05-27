@@ -38,6 +38,8 @@ paas-cli auth check --project j036x0
 | `create` | 创建服务 | `--service <name>` `--group <group>` |
 | `scale` | 扩缩容 | `--replicas <n>` |
 | `gray-publish` | 灰度发布 | `--config <dataId>` |
+| `lease status` | 查看服务租期状态 | — |
+| `lease renew` | 续期服务租期 | `--duration <months>`（默认 3 个月） |
 | `upgrade` | 版本升级 | `--version <ver>` |
 | `delete` | 删除服务 | `--service <name>` |
 
@@ -51,6 +53,8 @@ paas-cli nacos config --project j036x0 --env DEV
 paas-cli nacos create --project j036x0 --env DEV --service demo-service --group DEFAULT_GROUP
 paas-cli nacos scale --project j036x0 --env DEV --replicas 5
 paas-cli nacos gray-publish --project j036x0 --env DEV --config application.yml
+paas-cli nacos lease status --project j036x0 --env DEV
+paas-cli nacos lease renew --project j036x0 --env DEV --duration 3
 paas-cli nacos upgrade --project j036x0 --env DEV --version 2.4.0
 paas-cli nacos delete --project j036x0 --env DEV --service demo-service
 ```
@@ -69,6 +73,8 @@ paas-cli nacos delete --project j036x0 --env DEV --service demo-service
 | `create` | 创建实例 | `--mode standalone\|cluster` |
 | `scale` | 扩缩容 | `--replicas <n>` |
 | `slot-migrate` | 槽位迁移 | `--from <node>` `--to <node>` `--slots <n>` |
+| `lease status` | 查看服务租期状态 | — |
+| `lease renew` | 续期服务租期 | `--duration <months>`（默认 3 个月） |
 | `upgrade` | 版本升级 | `--version <ver>` |
 | `delete` | 删除集群 | — |
 
@@ -83,6 +89,8 @@ paas-cli redis config --project j036x0 --env DEV --maxmemory-policy allkeys-lru
 paas-cli redis create --project j036x0 --env DEV --mode standalone
 paas-cli redis scale --project j036x0 --env DEV --replicas 5
 paas-cli redis slot-migrate --project j036x0 --env DEV --from redis-0 --to redis-1 --slots 1000
+paas-cli redis lease status --project j036x0 --env DEV
+paas-cli redis lease renew --project j036x0 --env DEV --duration 3
 paas-cli redis upgrade --project j036x0 --env DEV --version 7.2.4
 paas-cli redis delete --project j036x0 --env DEV
 ```
@@ -101,6 +109,8 @@ paas-cli redis delete --project j036x0 --env DEV
 | `rollover` | 滚动索引 | `--alias <name>` |
 | `force-merge` | 强制合并段 | `--index <idx>` `--max-segments <n>` |
 | `scale` | 扩缩容 | `--nodes <n>` |
+| `lease status` | 查看服务租期状态 | — |
+| `lease renew` | 续期服务租期 | `--duration <months>`（默认 3 个月） |
 | `upgrade` | 版本升级 | `--version <ver>` |
 | `delete` | 删除集群 | — |
 
@@ -115,6 +125,8 @@ paas-cli es create-index --project j036x0 --env DEV --name log-2026-05 --shards 
 paas-cli es rollover --project j036x0 --env DEV --alias logs-write
 paas-cli es force-merge --project j036x0 --env DEV --index log-2026-04 --max-segments 1
 paas-cli es scale --project j036x0 --env DEV --nodes 5
+paas-cli es lease status --project j036x0 --env DEV
+paas-cli es lease renew --project j036x0 --env DEV --duration 3
 paas-cli es upgrade --project j036x0 --env DEV --version 8.13.0
 paas-cli es delete --project j036x0 --env DEV
 ```

@@ -1,6 +1,6 @@
 ---
 name: "middleware-nacos"
-version: "1.5.0"
+version: "1.6.0"
 description: "Nacos中间件技能，提供客户端创建、代码优化检查、集群操作和故障排查能力。触发词：Nacos、注册中心、配置中心、命名空间、服务发现、服务注册"
 ---
 
@@ -254,6 +254,8 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 | 创建服务 | `$PAAS_CLI nacos create --project {project_id} --env {env} --service {service_name} --group {group}` | 🟡 | 是 |
 | 扩缩容 | `$PAAS_CLI nacos scale --project {project_id} --env {env} --replicas {count}` | 🟡 | 是 |
 | 配置灰度发布 | `$PAAS_CLI nacos gray-publish --project {project_id} --env {env} --config {config_id}` | 🟡 | 是 |
+| 查看服务租期 | `$PAAS_CLI nacos lease status --project {project_id} --env {env}` | 🟢 | 否 |
+| 续期服务租期 | `$PAAS_CLI nacos lease renew --project {project_id} --env {env} --duration {months}` | 🟡 | 是 |
 | 升级版本 | `$PAAS_CLI nacos upgrade --project {project_id} --env {env} --version {version}` | 🔴 | 是 |
 | 删除服务 | `$PAAS_CLI nacos delete --project {project_id} --env {env} --service {service_name}` | 🔴 | 是 |
 
@@ -322,12 +324,29 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 | instance | string | 是 | — | Nacos 实例名称 |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
+### 租期过期专项排查
+
+当用户报告 Nacos 客户端连接失败，且错误信息涉及连接超时、服务注册失败或配置获取失败时，应优先检查服务租期是否过期：
+
+1. **租期状态查询**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 检查租期
+   ```
+   $PAAS_CLI nacos lease status --project {project_id} --env {env}
+   ```
+2. **租期续期**：如租期已过期，按 **paas-cli Skill** 执行续期命令（🟡 中风险，需确认）
+   ```
+   $PAAS_CLI nacos lease renew --project {project_id} --env {env} --duration {months}
+   ```
+   - `--duration` 参数单位为月，默认值为 **3**（即 3 个月）
+   - 需向用户交互确认续期时长，提供默认值 3 个月
+3. **续期后验证**：续期成功后，引导用户重启应用以重新建立连接
+
 ### 诊断流程
 
 > 详细诊断能力说明参见 `references/nacos-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如连接超时、服务下线、配置不生效等
-2. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 Nacos 集群基本状态
+2. **租期检查**（连接失败时优先）：如症状为连接失败/注册失败/配置获取失败，先按 **租期过期专项排查** 检查租期状态
+3. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 Nacos 集群基本状态
    ```
    $PAAS_CLI nacos info --project {project_id} --env {env}
    ```
@@ -349,6 +368,7 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 | 日志分析 | 错误日志、异常堆栈 | 扁鹊 |
 | 主备状态 | Leader 选举状态、同步延迟 | bianque Skill + paas-cli Skill |
 | 客户端连通性 | 从客户端节点到 Nacos 的网络可达性 | 扁鹊 |
+| 服务租期状态 | 服务租期是否过期 | paas-cli Skill（`$PAAS_CLI nacos lease status`） |
 
 > 上述诊断项均通过 `bianque nacos check` 命令执行，使用 `-v true` 展示详情，`-l` 指定日志检查行数
 
@@ -393,6 +413,7 @@ description: "Nacos中间件技能，提供客户端创建、代码优化检查�
 ## 变更记录
 
 - v1.5.0 (2026-05-26): 所有 paas-cli 操作改为委托 **paas-cli Skill**（`paas-cli-skill-delegation.md`）
+- v1.6.0 (2026-05-27): 新增服务租期管理（`nacos lease status/renew`），故障排查优先检查租期过期
 - v1.4.0 (2026-05-26): 路径由 `.trae/skills/` 调整为项目根 `skills/`
 - v1.3.0 (2026-05-26): CLI 工具迁至 `skills/paas-cli`、`skills/bianque`
 - v1.2.0 (2026-05-26): 增加 CLI 路径解析与 paas-cli Skill 委托（见 `cli-tooling.md`）

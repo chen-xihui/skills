@@ -1,6 +1,6 @@
 ---
 name: "middleware-es"
-version: "1.4.0"
+version: "1.5.0"
 description: "Elasticsearch中间件技能，提供客户端创建、代码优化检查、集群操作、故障排查和服务接入指引能力。触发词：ES、Elasticsearch、搜索引擎、索引、搜索、Elastic"
 ---
 
@@ -236,6 +236,8 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | 索引滚动 | `$PAAS_CLI es rollover --project {project_id} --env {env} --alias {alias}` | 🟡 | 是 |
 | Force merge | `$PAAS_CLI es force-merge --project {project_id} --env {env} --index {index_name} --max-segments {n}` | 🟡 | 是 |
 | 扩缩容 | `$PAAS_CLI es scale --project {project_id} --env {env} --nodes {count}` | 🟡 | 是 |
+| 查看服务租期 | `$PAAS_CLI es lease status --project {project_id} --env {env}` | 🟢 | 否 |
+| 续期服务租期 | `$PAAS_CLI es lease renew --project {project_id} --env {env} --duration {months}` | 🟡 | 是 |
 | 升级版本 | `$PAAS_CLI es upgrade --project {project_id} --env {env} --version {version}` | 🔴 | 是 |
 | 删除集群 | `$PAAS_CLI es delete --project {project_id} --env {env}` | 🔴 | 是 |
 
@@ -305,12 +307,29 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | instance | string | 是 | — | ES 实例名称 |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
+### 租期过期专项排查
+
+当用户报告 ES 客户端连接失败，且错误信息涉及连接超时、拒绝连接或认证失败时，应优先检查服务租期是否过期：
+
+1. **租期状态查询**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 检查租期
+   ```
+   $PAAS_CLI es lease status --project {project_id} --env {env}
+   ```
+2. **租期续期**：如租期已过期，按 **paas-cli Skill** 执行续期命令（🟡 中风险，需确认）
+   ```
+   $PAAS_CLI es lease renew --project {project_id} --env {env} --duration {months}
+   ```
+   - `--duration` 参数单位为月，默认值为 **3**（即 3 个月）
+   - 需向用户交互确认续期时长，提供默认值 3 个月
+3. **续期后验证**：续期成功后，引导用户重启应用以重新建立连接
+
 ### 诊断流程
 
 > 详细诊断能力说明和诊断脚本参见 `references/es-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如集群状态异常、查询缓慢、写入拒绝等
-2. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 ES 集群基本状态
+2. **租期检查**（连接失败时优先）：如症状为连接失败/拒绝连接/认证失败，先按 **租期过期专项排查** 检查租期状态
+3. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 ES 集群基本状态
    ```
    $PAAS_CLI es info --project {project_id} --env {env}
    ```
@@ -341,6 +360,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 | 写入拒绝 | 磁盘水位线、线程池队列拒绝 | 扁鹊 |
 | 索引健康 | 副本分片状态、段合并情况 | 扁鹊 |
 | 客户端连通性 | ES 客户端读写验证 | 扁鹊 |
+| 服务租期状态 | 服务租期是否过期 | paas-cli Skill（`$PAAS_CLI es lease status`） |
 
 > 上述诊断项均通过 `bianque elasticsearch check` 命令执行，使用 `-v true` 展示详情，`-o` 指定错误日志输出行数
 
@@ -446,6 +466,7 @@ description: "Elasticsearch中间件技能，提供客户端创建、代码优�
 ## 变更记录
 
 - v1.4.0 (2026-05-26): 所有 paas-cli 操作改为委托 **paas-cli Skill**
+- v1.5.0 (2026-05-27): 新增服务租期管理（`es lease status/renew`），故障排查优先检查租期过期
 - v1.3.0 (2026-05-26): Skill 与 CLI 路径统一为项目根 `skills/`（移除 `.trae/`）
 - v1.2.0 (2026-05-15): 重构 references 目录结构，将大文件拆分为模块化文件夹（es-audit-rules/、es-client-templates/、es-access-guide/、es-cluster-ops/、es-troubleshooting/），优化 LLM 上下文窗口使用效率
 - v1.1.0 (2026-05-12): 新增服务接入指引能力，涵盖设计、开发、测试、上线全生命周期指导

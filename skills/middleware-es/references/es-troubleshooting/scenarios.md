@@ -77,3 +77,27 @@
 | 单节点集群 | 增加节点，使副本可分配 |
 | 磁盘空间不足 | 清理旧索引或扩容 |
 | 节点暂时离开 | 等待节点恢复，副本会自动分配 |
+
+---
+
+## 场景 5：ES 服务租期过期
+
+**症状**：应用启动或运行时无法连接 Elasticsearch 服务，报连接超时、拒绝连接或认证失败
+
+**诊断步骤**：
+1. 经 paas-cli Skill 执行 `$PAAS_CLI es lease status --project {project_id} --env {env}` 检查租期状态
+2. 如租期已过期，这是连接失败的根本原因
+
+**常见原因与处理**：
+
+| 原因 | 处理建议 |
+|------|----------|
+| 服务租期已过期 | 经 paas-cli Skill 执行 `$PAAS_CLI es lease renew --project {project_id} --env {env} --duration 3` 续期（默认 3 个月） |
+| 租期即将过期 | 提前续期，避免服务中断 |
+| 续期后仍无法连接 | 确认续期生效后重启应用，检查网络连通性 |
+
+**完整处理流程**：
+1. 检查租期状态：`$PAAS_CLI es lease status --project {project_id} --env {env}`
+2. 确认租期过期后，向用户交互确认续期时长（默认 3 个月）
+3. 执行续期：`$PAAS_CLI es lease renew --project {project_id} --env {env} --duration {months}`
+4. 续期成功后重启应用，验证索引读写恢复正常

@@ -1,6 +1,6 @@
 ---
 name: "middleware-redis"
-version: "1.5.0"
+version: "1.6.0"
 description: "Redis中间件技能，提供客户端创建、代码优化检查、集群操作和故障排查能力。触发词：Redis、缓存、缓存数据库、哨兵、sentinel、集群缓存"
 ---
 
@@ -242,6 +242,8 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 | 查看集群状态 | `$PAAS_CLI redis info --project {project_id} --env {env}` | 🟢 | 否 |
 | 查看节点信息 | `$PAAS_CLI redis nodes --project {project_id} --env {env}` | 🟢 | 否 |
 | 查看内存使用 | `$PAAS_CLI redis memory --project {project_id} --env {env}` | 🟢 | 否 |
+| 查看服务租期 | `$PAAS_CLI redis lease status --project {project_id} --env {env}` | 🟢 | 否 |
+| 续期服务租期 | `$PAAS_CLI redis lease renew --project {project_id} --env {env} --duration {months}` | 🟡 | 是 |
 | 创建实例 | `$PAAS_CLI redis create --project {project_id} --env {env} --mode {mode}` | 🟡 | 是 |
 | 扩缩容 | `$PAAS_CLI redis scale --project {project_id} --env {env} --replicas {count}` | 🟡 | 是 |
 | Slot 迁移 | `$PAAS_CLI redis slot-migrate --project {project_id} --env {env} --from {node} --to {node} --slots {range}` | 🔴 | 是 |
@@ -308,12 +310,29 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 | type | enum | 是 | — | Redis 类型：cluster / sentinel |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
+### 租期过期专项排查
+
+当用户报告 Redis 客户端连接失败，且错误信息涉及连接超时、拒绝连接或认证失败时，应优先检查服务租期是否过期：
+
+1. **租期状态查询**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 检查租期
+   ```
+   $PAAS_CLI redis lease status --project {project_id} --env {env}
+   ```
+2. **租期续期**：如租期已过期，按 **paas-cli Skill** 执行续期命令（🟡 中风险，需确认）
+   ```
+   $PAAS_CLI redis lease renew --project {project_id} --env {env} --duration {months}
+   ```
+   - `--duration` 参数单位为月，默认值为 **3**（即 3 个月）
+   - 需向用户交互确认续期时长，提供默认值 3 个月
+3. **续期后验证**：续期成功后，引导用户重启应用以重新建立连接
+
 ### 诊断流程
 
 > 详细诊断能力说明参见 `references/redis-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如连接超时、响应慢、内存满等
-2. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 Redis 集群基本状态
+2. **租期检查**（连接失败时优先）：如症状为连接失败/拒绝连接/认证失败，先按 **租期过期专项排查** 检查租期状态
+3. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 Redis 集群基本状态
    ```
    $PAAS_CLI redis info --project {project_id} --env {env}
    ```
@@ -340,6 +359,7 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 | 持久化状态 | RDB/AOF 最后保存时间及状态 | 扁鹊 |
 | 故障转移 | Sentinel 选举记录、Failover 日志 | 扁鹊 |
 | 客户端连通性 | Redis 客户端读写验证 | 扁鹊 |
+| 服务租期状态 | 服务租期是否过期 | paas-cli Skill（`$PAAS_CLI redis lease status`） |
 
 > 上述诊断项均通过 `bianque redis check` 命令执行，使用 `-v true` 展示详情，`-l` 指定日志检查行数
 
@@ -440,6 +460,7 @@ description: "Redis中间件技能，提供客户端创建、代码优化检查�
 ## 变更记录
 
 - v1.5.0 (2026-05-26): 所有 paas-cli 操作改为委托 **paas-cli Skill**
+- v1.6.0 (2026-05-27): 新增服务租期管理（`redis lease status/renew`），故障排查优先检查租期过期
 - v1.4.0 (2026-05-26): Skill 与 CLI 路径统一为项目根 `skills/`（移除 `.trae/`）
 - v1.3.0 (2026-05-15): 重构 redis-troubleshooting.md 为模块化目录结构
 - v1.2.0 (2026-05-15): 重构 references 目录结构，将大文件拆分为模块化小文件，优化 LLM 上下文加载效率
