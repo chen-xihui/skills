@@ -1,7 +1,11 @@
 ---
-name: "paas-cli"
-version: "1.4.1"
-description: "PaaS 中间件运维 CLI（Mock）。执行集群查询、授权检查、连接配置拉取及 CRD 运维。触发词：paas-cli、PaaS CLI、集群运维、auth check、nacos config、redis config、es config"
+name: paas-cli
+version: "1.4.2"
+description: >-
+  Resolves $PAAS_CLI and runs PaaS middleware CLI (auth, config, cluster CRD).
+  Use when middleware skills delegate paas-cli, or the user mentions paas-cli,
+  auth check, nacos config, redis config, or es config.
+disable-model-invocation: true
 ---
 
 # paas-cli
@@ -100,6 +104,7 @@ export PATHEXT=".CMD;.PY;$PATHEXT"   # Windows
 
 ## 变更记录
 
+- v1.4.2 (2026-05-26): `disable-model-invocation`；description 对齐 Cursor/ECC 发现格式
 - v1.4.1 (2026-05-26): 步骤 1 改为 `paas-cli version` 探测（不再使用 `command -v`）；Mock 支持 `version` 子命令
 - v1.4.0 (2026-05-26): 路径解析改为优先 `paas-cli` 命令，失败再降级 Python 程序
 - v1.3.0 (2026-05-26): 路径解析改为优先当前项目 Mock，失败再降级系统（已调整，见 v1.4.0）

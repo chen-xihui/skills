@@ -435,7 +435,7 @@ graph TD
 | 规范项 | 说明 |
 |--------|------|
 | 调用方式 | 智能体通过终端命令执行（run_in_terminal） |
-| 命令格式 | `bianque diagnose --middleware {type} --project {project_id} --env {env} --check {items}` |
+| 命令格式 | 遵循 **bianque Skill**：`$BIANQUE nacos check` / `$BIANQUE redis check` / `$BIANQUE elasticsearch check`（见 `skills/bianque/references/COMMANDS.md`） |
 | 默认超时 | 60 秒（部分诊断脚本执行时间较长） |
 | 返回格式 | JSON（包含 status、findings、logs、suggestions 字段） |
 | 降级方案 | 不可达时回退到仅 paas-cli 基本状态查询 |
@@ -751,7 +751,7 @@ description: "{中间件名称}中间件技能，提供客户端创建、代码�
    ```
 3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Nacos 诊断脚本。
    ```
-   bianque diagnose --middleware nacos --project {project_id} --env {env} --check health,raft,log
+   $BIANQUE nacos check -n {namespace} -i {instance} -v true
    ```
 4. **补充信息收集**（可选）：如扁鹊诊断结果不充分，执行 paas-cli 进一步查询服务注册实例或配置状态。
 5. **结果分析与建议**：综合诊断数据，生成处理建议。
@@ -888,7 +888,7 @@ description: "{中间件名称}中间件技能，提供客户端创建、代码�
    ```
 3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Redis 诊断脚本。
    ```
-   bianque diagnose --middleware redis --project {project_id} --env {env} --check slowlog,memory,replication
+   $BIANQUE redis check -n {namespace} -i {instance} -t {type} -v true
    ```
 4. **补充信息收集**（可选）：如需进一步诊断，执行内存详情或慢查询命令。
 5. **结果分析与建议**：综合诊断数据，生成处理建议。
@@ -1018,7 +1018,7 @@ description: "{中间件名称}中间件技能，提供客户端创建、代码�
    ```
 3. **扁鹊诊断**：通过终端调用扁鹊平台执行 ES 诊断脚本。
    ```
-   bianque diagnose --middleware es --project {project_id} --env {env} --check cluster-health,shard,cpu,watermark
+   $BIANQUE elasticsearch check -n {namespace} -i {instance} -v true -o 50
    ```
 4. **补充信息收集**（可选）：如集群状态为 yellow/red，进一步查询未分配分片详情。
 5. **结果分析与建议**：综合诊断数据，生成处理建议。
@@ -1056,7 +1056,7 @@ description: "{中间件名称}中间件技能，提供客户端创建、代码�
 - **调用方式**：智能体通过终端执行 `bianque` 命令，传入中间件类型、项目组、环境和检查项。
 - **命令格式**：
   ```
-  bianque diagnose --middleware {nacos|redis|es} --project {project_id} --env {env} --check {check_items}
+  $BIANQUE {nacos|redis|elasticsearch} check -n {namespace} -i {instance} ...（见 bianque Skill）
   ```
 - **返回格式**：JSON 格式，包含 `status`、`findings`、`logs`、`suggestions` 字段。
 - **超时处理**：诊断命令默认超时 60 秒（部分诊断脚本执行时间较长）。
@@ -1745,18 +1745,29 @@ middleware-skills/                        # Skill 分发仓库根目录
  └── README.md                            # 仓库说明（安装方式、版本列表）
 ```
 
-> **关于目录路径的说明**：本仓库以项目根目录 **`skills/`** 作为 Skill 与 Mock CLI 的统一根路径（已移除历史 `.trae/` 目录）。集成到其他项目时：可将本仓库作为子模块，或将 `skills/` 复制/链接到目标项目的 `skills/` 或 **Cursor** 的 `.cursor/skills/`。对应关系如下：
+> **关于目录路径的说明**：本仓库以项目根目录 **`skills/`** 作为 Skill 源码（唯一事实源）。集成到业务项目时，使用 **`scripts/install-skills.sh` 复制**（不使用符号链接）到各 Agent 发现目录：
 >
-> | 本仓库路径 | 集成到业务项目 | 说明 |
-> |-------------|----------------|------|
-> | `skills/middleware/` | `skills/middleware/` 或 `.cursor/skills/middleware/` | 入口 Skill |
-> | `skills/middleware-nacos/` | 同上 | Nacos 专项 |
-> | `skills/paas-cli/`、`skills/bianque/` | 同上 | Mock CLI 与工具 Skill |
-> | `knowledge/`（Phase 4） | `knowledge/` | RAG 知识库（可选） |
+> | Agent | 项目级目标 |
+> |-------|-----------|
+> | Cursor | `.cursor/skills/` |
+> | Qoder | `.qoder/skills/`（用户级：`~/.qoder/skills/`，`qoder --global`） |
+> | TRAE | `.trae/skills/` |
+>
+> 命令：`./scripts/install-skills.sh cursor|qoder|trae|all`，详见仓库 `README.md`。
 
 ### 16.2 安装方式
 
-支持三种安装方式，覆盖不同使用场景：
+#### 16.2.0 复制安装（推荐，本仓库）
+
+```bash
+./scripts/install-skills.sh all              # Cursor + Qoder + TRAE
+./scripts/install-skills.sh all --project-dir /path/to/app
+./scripts/install-skills.sh qoder --global # 用户级 ~/.qoder/skills/
+```
+
+修改源码目录 `skills/` 后重新执行上述命令以刷新副本。
+
+支持以下安装方式，覆盖不同使用场景：
 
 #### 16.2.1 一键安装（推荐）
 
@@ -1773,7 +1784,7 @@ npx skills add <org>/middleware-skills/middleware-es
 npx skills add <org>/middleware-skills/middleware-redis
 ```
 
-安装后 Skill 文件放入目标项目的 `skills/` 或 `.cursor/skills/`，由 IDE / Agent 发现与加载。
+安装后执行 `install-skills.sh` 复制到 `.cursor/skills/`、`.qoder/skills/` 或 `.trae/skills/`。
 
 #### 16.2.2 Git 子模块集成（团队项目）
 
