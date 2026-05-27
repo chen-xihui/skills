@@ -162,6 +162,42 @@ def cmd_nacos_delete(args):
     print(f"   Project : {pid}")
     print(f"   Env     : {env}")
 
+def cmd_nacos_lease_status(args):
+    """Check Nacos service lease status."""
+    pid, env = _project(args), _env(args)
+    print(f"Nacos Service Lease Status — project={pid}  env={env}")
+    print(f"  Cluster Name  : nacos-{pid}-{env.lower()}")
+    print(f"  Lease Status  : ⛔ Expired")
+    print(f"  Lease Start   : {_ts(-2200)}")
+    print(f"  Lease End     : {_ts(-8)}")
+    print(f"  Current Time  : {_ts()}")
+    print(f"  Expired For   : 8 hours")
+    print(f"  Auto Release  : {_ts(64)} (service will be decommissioned if not renewed)")
+    print(f"  Renewable     : ✅ Yes")
+    print(f"  ")
+    print(f"  ⚠️  The Nacos service has expired. Connection failures are expected.")
+    print(f"  To renew the lease, run:")
+    print(f"    paas-cli nacos lease renew --project {pid} --env {env} --duration 3")
+
+def cmd_nacos_lease_renew(args):
+    """Renew Nacos service lease."""
+    pid, env = _project(args), _env(args)
+    duration = _param(args, "duration", "3")
+    try:
+        months = int(duration)
+    except ValueError:
+        months = 3
+    print(f"✅ Nacos service lease renewed successfully")
+    print(f"   Project     : {pid}")
+    print(f"   Env         : {env}")
+    print(f"   Cluster     : nacos-{pid}-{env.lower()}")
+    print(f"   Duration    : {months} month{'s' if months != 1 else ''}")
+    print(f"   New Lease Start : {_ts()}")
+    print(f"   New Lease End   : {_ts(months * 730)}")
+    print(f"   Status      : Active ✅")
+    print(f"   ")
+    print(f"   📝 The Nacos service is now accessible. Please restart your application to reconnect.")
+
 # ── Redis commands ────────────────────────────────────────────────────────────
 
 def cmd_redis_info(args):
@@ -266,6 +302,42 @@ def cmd_redis_upgrade(args):
     print(f"✅ Upgrade initiated")
     print(f"   Cluster : redis-{pid}-{env.lower()}")
     print(f"   Version : {ver}")
+
+def cmd_redis_lease_status(args):
+    """Check Redis service lease status."""
+    pid, env = _project(args), _env(args)
+    print(f"Redis Service Lease Status — project={pid}  env={env}")
+    print(f"  Cluster Name  : redis-{pid}-{env.lower()}")
+    print(f"  Lease Status  : ⛔ Expired")
+    print(f"  Lease Start   : {_ts(-2200)}")
+    print(f"  Lease End     : {_ts(-8)}")
+    print(f"  Current Time  : {_ts()}")
+    print(f"  Expired For   : 8 hours")
+    print(f"  Auto Release  : {_ts(64)} (service will be decommissioned if not renewed)")
+    print(f"  Renewable     : ✅ Yes")
+    print(f"  ")
+    print(f"  ⚠️  The Redis service has expired. Connection failures are expected.")
+    print(f"  To renew the lease, run:")
+    print(f"    paas-cli redis lease renew --project {pid} --env {env} --duration 3")
+
+def cmd_redis_lease_renew(args):
+    """Renew Redis service lease."""
+    pid, env = _project(args), _env(args)
+    duration = _param(args, "duration", "3")
+    try:
+        months = int(duration)
+    except ValueError:
+        months = 3
+    print(f"✅ Redis service lease renewed successfully")
+    print(f"   Project     : {pid}")
+    print(f"   Env         : {env}")
+    print(f"   Cluster     : redis-{pid}-{env.lower()}")
+    print(f"   Duration    : {months} month{'s' if months != 1 else ''}")
+    print(f"   New Lease Start : {_ts()}")
+    print(f"   New Lease End   : {_ts(months * 730)}")
+    print(f"   Status      : Active ✅")
+    print(f"   ")
+    print(f"   📝 The Redis service is now accessible. Please restart your application to reconnect.")
 
 def cmd_redis_delete(args):
     pid, env = _project(args), _env(args)
@@ -374,6 +446,42 @@ def cmd_es_delete(args):
     print(f"✅ Cluster deletion initiated")
     print(f"   Cluster : es-{pid}-{env.lower()}")
     print(f"   Warning : All indices and data will be permanently deleted")
+
+def cmd_es_lease_status(args):
+    """Check Elasticsearch service lease status."""
+    pid, env = _project(args), _env(args)
+    print(f"Elasticsearch Service Lease Status — project={pid}  env={env}")
+    print(f"  Cluster Name  : es-{pid}-{env.lower()}")
+    print(f"  Lease Status  : ⛔ Expired")
+    print(f"  Lease Start   : {_ts(-2200)}")
+    print(f"  Lease End     : {_ts(-8)}")
+    print(f"  Current Time  : {_ts()}")
+    print(f"  Expired For   : 8 hours")
+    print(f"  Auto Release  : {_ts(64)} (service will be decommissioned if not renewed)")
+    print(f"  Renewable     : ✅ Yes")
+    print(f"  ")
+    print(f"  ⚠️  The Elasticsearch service has expired. Connection failures are expected.")
+    print(f"  To renew the lease, run:")
+    print(f"    paas-cli es lease renew --project {pid} --env {env} --duration 3")
+
+def cmd_es_lease_renew(args):
+    """Renew Elasticsearch service lease."""
+    pid, env = _project(args), _env(args)
+    duration = _param(args, "duration", "3")
+    try:
+        months = int(duration)
+    except ValueError:
+        months = 3
+    print(f"✅ Elasticsearch service lease renewed successfully")
+    print(f"   Project     : {pid}")
+    print(f"   Env         : {env}")
+    print(f"   Cluster     : es-{pid}-{env.lower()}")
+    print(f"   Duration    : {months} month{'s' if months != 1 else ''}")
+    print(f"   New Lease Start : {_ts()}")
+    print(f"   New Lease End   : {_ts(months * 730)}")
+    print(f"   Status      : Active ✅")
+    print(f"   ")
+    print(f"   📝 The Elasticsearch service is now accessible. Please restart your application to reconnect.")
 
 # ── CRD-style commands (create/get/update/delete/switch + resource) ──────────
 
@@ -495,6 +603,11 @@ def _crd_detail(resource):
 
 # ── dispatch ──────────────────────────────────────────────────────────────────
 
+NACOS_LEASE_SUB = {
+    "status": cmd_nacos_lease_status,
+    "renew": cmd_nacos_lease_renew,
+}
+
 NACOS_SUB = {
     "info": cmd_nacos_info,
     "instances": cmd_nacos_instances,
@@ -503,8 +616,14 @@ NACOS_SUB = {
     "create": cmd_nacos_create,
     "scale": cmd_nacos_scale,
     "gray-publish": cmd_nacos_gray_publish,
+    "lease": NACOS_LEASE_SUB,
     "upgrade": cmd_nacos_upgrade,
     "delete": cmd_nacos_delete,
+}
+
+REDIS_LEASE_SUB = {
+    "status": cmd_redis_lease_status,
+    "renew": cmd_redis_lease_renew,
 }
 
 REDIS_SUB = {
@@ -515,8 +634,14 @@ REDIS_SUB = {
     "create": cmd_redis_create,
     "scale": cmd_redis_scale,
     "slot-migrate": cmd_redis_slot_migrate,
+    "lease": REDIS_LEASE_SUB,
     "upgrade": cmd_redis_upgrade,
     "delete": cmd_redis_delete,
+}
+
+ES_LEASE_SUB = {
+    "status": cmd_es_lease_status,
+    "renew": cmd_es_lease_renew,
 }
 
 ES_SUB = {
@@ -528,6 +653,7 @@ ES_SUB = {
     "rollover": cmd_es_rollover,
     "force-merge": cmd_es_force_merge,
     "scale": cmd_es_scale,
+    "lease": ES_LEASE_SUB,
     "upgrade": cmd_es_upgrade,
     "delete": cmd_es_delete,
 }
@@ -565,11 +691,24 @@ def main():
         else:
             print("Unknown auth subcommand")
     elif cmd == "nacos":
-        if rest and rest[0] in NACOS_SUB:
-            # Check if the subcommand has --maxmemory-policy (Redis config override)
-            NACOS_SUB[rest[0]](rest[1:])
+        if rest:
+            sub = rest[0]
+            sub_rest = rest[1:]
+            if sub == "lease" and sub_rest:
+                # Handle nacos lease <status|renew> ...
+                lease_sub = sub_rest[0]
+                lease_rest = sub_rest[1:]
+                if lease_sub in NACOS_LEASE_SUB:
+                    NACOS_LEASE_SUB[lease_sub](lease_rest)
+                else:
+                    print(f"Unknown nacos lease subcommand: {lease_sub}")
+                    print("Available: status, renew")
+            elif sub in NACOS_SUB and callable(NACOS_SUB[sub]):
+                NACOS_SUB[sub](sub_rest)
+            else:
+                print(f"Unknown nacos subcommand: {sub}")
         else:
-            print(f"Unknown nacos subcommand: {rest[0] if rest else '(none)'}")
+            print("Missing nacos subcommand")
     elif cmd == "redis":
         if rest:
             sub = rest[0]
@@ -577,17 +716,40 @@ def main():
             # Special case: redis config --maxmemory-policy → policy change
             if sub == "config" and "--maxmemory-policy" in " ".join(sub_rest):
                 cmd_redis_config_policy(sub_rest)
-            elif sub in REDIS_SUB:
+            elif sub == "lease" and sub_rest:
+                # Handle redis lease <status|renew> ...
+                lease_sub = sub_rest[0]
+                lease_rest = sub_rest[1:]
+                if lease_sub in REDIS_LEASE_SUB:
+                    REDIS_LEASE_SUB[lease_sub](lease_rest)
+                else:
+                    print(f"Unknown redis lease subcommand: {lease_sub}")
+                    print("Available: status, renew")
+            elif sub in REDIS_SUB and callable(REDIS_SUB[sub]):
                 REDIS_SUB[sub](sub_rest)
             else:
                 print(f"Unknown redis subcommand: {sub}")
         else:
             print("Missing redis subcommand")
     elif cmd == "es":
-        if rest and rest[0] in ES_SUB:
-            ES_SUB[rest[0]](rest[1:])
+        if rest:
+            sub = rest[0]
+            sub_rest = rest[1:]
+            if sub == "lease" and sub_rest:
+                # Handle es lease <status|renew> ...
+                lease_sub = sub_rest[0]
+                lease_rest = sub_rest[1:]
+                if lease_sub in ES_LEASE_SUB:
+                    ES_LEASE_SUB[lease_sub](lease_rest)
+                else:
+                    print(f"Unknown es lease subcommand: {lease_sub}")
+                    print("Available: status, renew")
+            elif sub in ES_SUB and callable(ES_SUB[sub]):
+                ES_SUB[sub](sub_rest)
+            else:
+                print(f"Unknown es subcommand: {sub}")
         else:
-            print(f"Unknown es subcommand: {rest[0] if rest else '(none)'}")
+            print("Missing es subcommand")
     elif cmd in CRD_ACTIONS:
         cmd_crd(args)
     else:
