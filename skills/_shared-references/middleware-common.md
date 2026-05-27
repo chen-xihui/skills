@@ -56,7 +56,7 @@ $BIANQUE version
 | project_id | 小写字母、数字，如 j036x0 |
 | env | DEV / SIT / SRV |
 | version | 语义化版本号 |
-| count / replicas / nodes / shards | 正整数 |
+| count / replicas / nodes / shards / months / duration | 正整数（`duration` 用于租约续期，单位：月） |
 | namespace | 小写字母、数字、短横线 |
 | instance | 字母、数字、短横线 |
 

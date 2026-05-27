@@ -30,6 +30,8 @@
 | 索引滚动 | `$PAAS_CLI es rollover --project {project_id} --env {env} --alias {alias}` | 🟡 | 是 |
 | Force merge | `$PAAS_CLI es force-merge --project {project_id} --env {env} --index {index_name} --max-segments {n}` | 🟡 | 是 |
 | 扩缩容 | `$PAAS_CLI es scale --project {project_id} --env {env} --nodes {count}` | 🟡 | 是 |
+| 查看服务租期 | `$PAAS_CLI es lease status --project {project_id} --env {env}` | 🟢 | 否 |
+| 续期服务租期 | `$PAAS_CLI es lease renew --project {project_id} --env {env} --duration {months}` | 🟡 | 是 |
 | 升级版本 | `$PAAS_CLI es upgrade --project {project_id} --env {env} --version {version}` | 🔴 | 是 |
 | 删除集群 | `$PAAS_CLI es delete --project {project_id} --env {env}` | 🔴 | 是 |
 

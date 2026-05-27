@@ -19,27 +19,43 @@
 | type | enum | 是 | — | Redis 类型：cluster / sentinel |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
+### 租期过期专项排查
+
+当用户报告 Redis 客户端连接失败，且错误信息涉及连接超时、拒绝连接或认证失败时，应**优先**检查服务租期是否过期（详见 `references/redis-troubleshooting/scenarios.md`）：
+
+1. **租期状态查询**：
+   ```
+   $PAAS_CLI redis lease status --project {project_id} --env {env}
+   ```
+2. **租期续期**（🟡 中风险，须用户确认后执行）：
+   ```
+   $PAAS_CLI redis lease renew --project {project_id} --env {env} --duration {months}
+   ```
+   - `--duration` 单位为**月**，默认 **3**；须向用户确认续期时长
+3. **续期后验证**：续期成功后，引导用户重启应用以重新建立连接
+
 ### 诊断流程
 
 > 详细诊断能力说明参见 `references/redis-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如连接超时、响应慢、内存满等
-2. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 Redis 集群基本状态
+2. **租期检查**（连接失败时优先）：如症状为连接失败、拒绝连接、认证失败，先执行 **租期过期专项排查**
+3. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 Redis 集群基本状态
    ```
    $PAAS_CLI redis info --project {project_id} --env {env}
    ```
-3. **扁鹊诊断**：通过终端调用扁鹊平台执行 Redis 诊断命令
+4. **扁鹊诊断**：通过终端调用扁鹊平台执行 Redis 诊断命令
    ```
    $BIANQUE redis check -n {namespace} -i {instance} -t {type} -v true
    ```
    - 扁鹊诊断命令默认超时 60 秒
    - 如扁鹊不可达，回退到仅通过 **paas-cli Skill** 执行基础 `$PAAS_CLI` 状态检查
-4. **补充信息收集**（可选）：如需进一步诊断，执行内存详情或慢查询命令
+5. **补充信息收集**（可选）：如需进一步诊断，执行内存详情或慢查询命令
    ```
    $PAAS_CLI redis memory --project {project_id} --env {env}
    $PAAS_CLI redis nodes --project {project_id} --env {env}
    ```
-5. **结果分析与建议**：综合诊断数据，生成处理建议，按优先级排序
+6. **结果分析与建议**：综合诊断数据，生成处理建议，按优先级排序
 
 ### 诊断能力
 
@@ -51,8 +67,9 @@
 | 持久化状态 | RDB/AOF 最后保存时间及状态 | 扁鹊 |
 | 故障转移 | Sentinel 选举记录、Failover 日志 | 扁鹊 |
 | 客户端连通性 | Redis 客户端读写验证 | 扁鹊 |
+| 服务租期状态 | 租期是否过期、剩余时长 | paas-cli Skill（`$PAAS_CLI redis lease status`） |
 
-> 上述诊断项均通过 `$BIANQUE redis check` 命令执行，使用 `-v true` 展示详情，`-l` 指定日志检查行数
+> 扁鹊侧诊断项通过 `$BIANQUE redis check` 命令执行，使用 `-v true` 展示详情，`-l` 指定日志检查行数
 
 ### 降级方案
 

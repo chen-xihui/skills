@@ -1,6 +1,6 @@
 ---
 name: middleware-nacos
-version: "1.6.0"
+version: "1.6.1"
 description: >-
   Creates Nacos clients, audits usage, runs cluster ops via paas-cli Skill, and
   troubleshoots with bianque Skill. Use when the user mentions Nacos, 注册中心,
@@ -42,6 +42,7 @@ disable-model-invocation: true
 
 ## 变更记录
 
+- v1.6.1 (2026-05-27): 租约能力并入 `capabilities/03-cluster`、`04-troubleshoot`（对齐 master）
 - v1.6.0 (2026-05-26): ECC 式瘦身——通用规范下沉、能力拆至 `references/capabilities/`；`description` 与 `$BIANQUE` 统一
 - v1.5.0 (2026-05-26): 委托 paas-cli Skill
 - v1.0.0 (2026-05-11): 初始版本

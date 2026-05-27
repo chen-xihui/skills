@@ -28,6 +28,8 @@
 | 创建服务 | `$PAAS_CLI nacos create --project {project_id} --env {env} --service {service_name} --group {group}` | 🟡 | 是 |
 | 扩缩容 | `$PAAS_CLI nacos scale --project {project_id} --env {env} --replicas {count}` | 🟡 | 是 |
 | 配置灰度发布 | `$PAAS_CLI nacos gray-publish --project {project_id} --env {env} --config {config_id}` | 🟡 | 是 |
+| 查看服务租期 | `$PAAS_CLI nacos lease status --project {project_id} --env {env}` | 🟢 | 否 |
+| 续期服务租期 | `$PAAS_CLI nacos lease renew --project {project_id} --env {env} --duration {months}` | 🟡 | 是 |
 | 升级版本 | `$PAAS_CLI nacos upgrade --project {project_id} --env {env} --version {version}` | 🔴 | 是 |
 | 删除服务 | `$PAAS_CLI nacos delete --project {project_id} --env {env} --service {service_name}` | 🔴 | 是 |
 

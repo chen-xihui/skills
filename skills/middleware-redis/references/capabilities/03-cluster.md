@@ -25,6 +25,8 @@
 | 查看集群状态 | `$PAAS_CLI redis info --project {project_id} --env {env}` | 🟢 | 否 |
 | 查看节点信息 | `$PAAS_CLI redis nodes --project {project_id} --env {env}` | 🟢 | 否 |
 | 查看内存使用 | `$PAAS_CLI redis memory --project {project_id} --env {env}` | 🟢 | 否 |
+| 查看服务租期 | `$PAAS_CLI redis lease status --project {project_id} --env {env}` | 🟢 | 否 |
+| 续期服务租期 | `$PAAS_CLI redis lease renew --project {project_id} --env {env} --duration {months}` | 🟡 | 是 |
 | 创建实例 | `$PAAS_CLI redis create --project {project_id} --env {env} --mode {mode}` | 🟡 | 是 |
 | 扩缩容 | `$PAAS_CLI redis scale --project {project_id} --env {env} --replicas {count}` | 🟡 | 是 |
 | Slot 迁移 | `$PAAS_CLI redis slot-migrate --project {project_id} --env {env} --from {node} --to {node} --slots {range}` | 🔴 | 是 |

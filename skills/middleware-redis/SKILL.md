@@ -1,6 +1,6 @@
 ---
 name: middleware-redis
-version: "1.7.0"
+version: "1.7.1"
 description: >-
   Creates Redis clients, audits usage, runs cluster ops via paas-cli Skill,
   troubleshoots with bianque Skill, and provides access guides. Use when the user
@@ -48,6 +48,7 @@ disable-model-invocation: true
 
 ## 变更记录
 
+- v1.7.1 (2026-05-27): 租约能力并入 `capabilities/03-cluster`、`04-troubleshoot`（对齐 master）
 - v1.7.0 (2026-05-26): 能力一对齐 Nacos：`auth check` + `redis config` 拉取平台字段；移除用户必填 password
 - v1.6.0 (2026-05-26): ECC 式瘦身——能力拆至 `references/capabilities/`
 - v1.5.0 (2026-05-26): 委托 paas-cli Skill

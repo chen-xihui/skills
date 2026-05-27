@@ -19,31 +19,47 @@
 | instance | string | 是 | — | ES 实例名称 |
 | symptom | string | 否 | — | 用户描述的异常现象 |
 
+### 租期过期专项排查
+
+当用户报告 ES 客户端连接失败，且错误信息涉及连接超时、拒绝连接或认证失败时，应**优先**检查服务租期是否过期（详见 `references/es-troubleshooting/scenarios.md`）：
+
+1. **租期状态查询**：
+   ```
+   $PAAS_CLI es lease status --project {project_id} --env {env}
+   ```
+2. **租期续期**（🟡 中风险，须用户确认后执行）：
+   ```
+   $PAAS_CLI es lease renew --project {project_id} --env {env} --duration {months}
+   ```
+   - `--duration` 单位为**月**，默认 **3**；须向用户确认续期时长
+3. **续期后验证**：续期成功后，引导用户重启应用以重新建立连接
+
 ### 诊断流程
 
 > 详细诊断能力说明和诊断脚本参见 `references/es-troubleshooting/` 目录
 
 1. **信息收集**：记录用户描述的异常现象（symptom），如集群状态异常、查询缓慢、写入拒绝等
-2. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 ES 集群基本状态
+2. **租期检查**（连接失败时优先）：如症状为连接失败、拒绝连接、认证失败，先执行 **租期过期专项排查**
+3. **集群状态检查**：按 **paas-cli Skill** 在终端执行 `$PAAS_CLI` 查看 ES 集群基本状态
    ```
    $PAAS_CLI es info --project {project_id} --env {env}
    ```
    - 检查集群健康状态（Green / Yellow / Red）
    - 检查节点数量和状态
-3. **扁鹊诊断**：通过终端调用扁鹊平台执行 ES 诊断命令
+4. **扁鹊诊断**：通过终端调用扁鹊平台执行 ES 诊断命令
    ```
    $BIANQUE elasticsearch check -n {namespace} -i {instance} -v true -o 50
    ```
    - 扁鹊诊断命令默认超时 60 秒（部分诊断脚本执行时间较长）
    - 如扁鹊不可达，回退到仅通过 **paas-cli Skill** 执行基础 `$PAAS_CLI` 状态检查，在报告中注明
-4. **补充信息收集**（可选）：如集群状态为 yellow/red，进一步查询：
+5. **补充信息收集**（可选）：如集群状态为 yellow/red，进一步查询：
    ```
    $PAAS_CLI es indices --project {project_id} --env {env}
    $PAAS_CLI es disk-usage --project {project_id} --env {env}
    ```
    - 查看未分配分片详情
    - 检查磁盘水位线状态
-5. **结果分析与建议**：综合诊断数据，生成处理建议，按优先级排序
+6. **结果分析与建议**：综合诊断数据，生成处理建议，按优先级排序
 
 ### 诊断能力
 
@@ -55,8 +71,9 @@
 | 写入拒绝 | 磁盘水位线、线程池队列拒绝 | 扁鹊 |
 | 索引健康 | 副本分片状态、段合并情况 | 扁鹊 |
 | 客户端连通性 | ES 客户端读写验证 | 扁鹊 |
+| 服务租期状态 | 租期是否过期、剩余时长 | paas-cli Skill（`$PAAS_CLI es lease status`） |
 
-> 上述诊断项均通过 `$BIANQUE elasticsearch check` 命令执行，使用 `-v true` 展示详情，`-o` 指定错误日志输出行数
+> 扁鹊侧诊断项通过 `$BIANQUE elasticsearch check` 命令执行，使用 `-v true` 展示详情，`-o` 指定错误日志输出行数
 
 ### 降级方案
 
