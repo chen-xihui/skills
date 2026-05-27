@@ -1,0 +1,9 @@
+resource: hotbackupstrategy
+action: create
+params:
+  name: hot-backup-test001
+  clusterType: cluster
+  primaryCluster: 1/wxx/cluster-primary
+  backupCluster: 1/wxx/cluster-backup
+  syncMode: async
+  enableHealthCheck: true

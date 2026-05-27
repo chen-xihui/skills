@@ -1,0 +1,13 @@
+resource: unitstrategy
+action: create
+params:
+  name: unit-strategy-test001
+  clusterType: cluster
+  unitCount: 3
+  unitClusters:
+    - unit: unit-01
+      cluster: 1/wxx/cluster-unit-01
+    - unit: unit-02
+      cluster: 1/wxx/cluster-unit-02
+    - unit: unit-03
+      cluster: 1/wxx/cluster-unit-03

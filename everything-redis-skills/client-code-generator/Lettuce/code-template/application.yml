@@ -1,0 +1,14 @@
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:A12345*}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 20      # maxTotal
+          max-idle: 10        # maxIdle
+          min-idle: 5         # minIdle
+          max-wait: 3000ms    # maxWaitMillis
+        shutdown-timeout: 100ms
