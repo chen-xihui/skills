@@ -15,7 +15,8 @@
 | project_id | string | 是 | — | 项目组编号，如 j036x0 |
 | env | enum | 是 | — | 环境：DEV / SIT / SRV |
 | target_path | string | 是 | — | 代码生成目标路径 |
-| client_version | enum | 否 | — | new（ElasticsearchClient 8.x+）/ old（RestHighLevelClient 7.x）；**可参考 CLI `Version` 推断** |
+| client_version | enum | 否 | — | new（8.x+）/ old（7.x RHLC）；**可参考 CLI `Version` 推断** |
+| java_stack | enum | 否 | elasticsearch-java | 仅 Java：`elasticsearch-java` / `spring-data` / `bboss` / `rhlc`（见模板索引） |
 | language | enum | 否 | Java | 项目语言：Java / Go / Python / Node.js |
 
 **平台拉取字段（禁止向用户索要或覆盖）**：
@@ -31,7 +32,7 @@
 
 ### 处理流程
 
-1. **参数收集**：确认 `project_id`、`env`、`target_path`、`language`；`client_version` 未指定时，在步骤 3 根据 CLI `Version` 建议 new/old
+1. **参数收集**：确认 `project_id`、`env`、`target_path`、`language`；Java 项目另确认 `java_stack`（未指定时按 [es-client-templates/index.md](../es-client-templates/index.md) 选型表）；`client_version` 未指定时，在步骤 3 根据 CLI `Version` 建议 new/old
 2. **前置检查（阻塞，须全部成功后才可继续）**：
    - **遵循 paas-cli Skill**：按 `skills/paas-cli/SKILL.md` 完成 `$PAAS_CLI` 解析
    - `$PAAS_CLI version`、`$PAAS_CLI ping`
@@ -47,17 +48,21 @@
    - 解析：`Hosts` → `hosts`，`Scheme` → `scheme`，`Username` → `auth_user`，`Version` → `es_version`
    - 在对话中完整展示 CLI 命令及解析结果
    - **不得以用户口述或项目内旧配置覆盖 CLI 返回的 `Username`**
-4. **确定 client_version**：若用户未指定，按 `es_version`：主版本 ≥8 → `new`，7.x → `old`，并在输出中说明
-5. **代码生成**：按 `language` + `client_version` 选择模板
-   > 详细代码模板参见 `references/es-client-templates/` 目录
+4. **确定 client_version / java_stack**：
+   - `es_version` 主版本 ≥8 → `client_version=new`；7.x → `client_version=old`，`java_stack=rhlc`
+   - `java_stack` 未指定时：Boot 项目倾向 `spring-data`；明确 BBoss 则 `bboss`；否则默认 `elasticsearch-java`
+5. **代码生成**：按 `language` + `client_version` + `java_stack` 选择模板
+   > 详见 `references/es-client-templates/index.md`
 
-   | 组合 | 生成文件 |
-   |------|---------|
-   | Java + new | ElasticsearchConfig.java、EsDocumentService.java、application.yml |
-   | Java + old | EsRestHighLevelConfig.java、EsDocumentService.java、application.yml |
-   | Go | es_client.go、config.yaml |
-   | Python | es_client.py、config.py |
-   | Node.js | elasticsearch_client.js、config.js |
+   | 组合 | 模板文件 | 主要生成物 |
+   |------|----------|------------|
+   | Java + elasticsearch-java | java-elasticsearch-java.md | ElasticsearchConfig、EsDocumentService、application.yml |
+   | Java + spring-data | java-spring-data.md | ElasticsearchSpringConfig、Repository、application.yml |
+   | Java + bboss | java-bboss.md | application.yml、BbossDemoService、esmapper XML |
+   | Java + rhlc (old) | java-old.md | EsRestHighLevelConfig、EsDocumentService、application.yml |
+   | Go | go.md | es_client.go、config.yaml |
+   | Python | python.md | es_client.py、config.py |
+   | Node.js | nodejs.md | elasticsearch_client.js、config.js |
 
 6. **文件写入**：将生成的代码写入 `target_path`
 7. **依赖提示**：列出需要添加的依赖（版本与 `es_version` 对齐）

@@ -285,12 +285,13 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
 | target_path | 是 | — | 生成路径 |
-| client_version | 否 | — | new/old；可参考 CLI `Version` |
+| client_version | 否 | — | new(8.x)/old(7.x)；可参考 CLI `Version` |
+| java_stack | 否 | elasticsearch-java | Java 专用：elasticsearch-java / spring-data / bboss / rhlc |
 | language | 否 | Java | Java/Go/Python/Node.js |
 
 平台字段（CLI，禁止用户覆盖）：`Hosts`、`Scheme`、`Username` 来自 `es config`；密码仅用 `${ES_PASSWORD}`
 
-流程：参数收集 → `$PAAS_CLI auth check` → `$PAAS_CLI es config` → 按 client_version/language 生成 → 写入 → 依赖提示
+流程：参数收集（含 java_stack）→ `$PAAS_CLI auth check` → `$PAAS_CLI es config` → 按模板索引生成 → 写入 → 依赖提示
 
 ### 9.2 代码审计规则
 
