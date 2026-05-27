@@ -1,5 +1,9 @@
 # Java + ElasticsearchClient (8.x+) 模板
 
+> **已拆分**：完整官方客户端模板见 [java-elasticsearch-java.md](java-elasticsearch-java.md)。下文保留兼容；新建请优先引用该文件。
+
+---
+
 ## ElasticsearchConfig.java
 
 ```java

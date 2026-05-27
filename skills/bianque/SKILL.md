@@ -1,7 +1,11 @@
 ---
-name: "bianque"
-version: "1.2.0"
-description: "扁鹊中间件诊断 CLI（Mock）。检查 Nacos/Redis/ES 实例健康、日志与客户端连通性。触发词：bianque、扁鹊、故障诊断、nacos check、redis check、elasticsearch check"
+name: bianque
+version: "1.2.1"
+description: >-
+  Resolves $BIANQUE and runs middleware diagnostics (nacos/redis/elasticsearch
+  check). Use when troubleshooting middleware or the user mentions bianque, 扁鹊,
+  or fault diagnosis for Nacos/Redis/ES.
+disable-model-invocation: true
 ---
 
 # bianque（扁鹊）
@@ -78,6 +82,7 @@ export PATH="$(pwd)/skills/bianque:$PATH"
 
 ## 变更记录
 
+- v1.2.1 (2026-05-26): `disable-model-invocation`；description 对齐 Cursor/ECC 发现格式
 - v1.2.0 (2026-05-26): 路径解析与 paas-cli 对齐（`bianque version` → 项目 `bianque.py version`）；Mock 支持 `version` 子命令
 - v1.1.0 (2026-05-26): 路径统一为项目根 `skills/bianque/`（移除 `.trae` 目录）
 - v1.0.0 (2026-05-26): 初始版本，Mock 诊断 CLI 与命令参考

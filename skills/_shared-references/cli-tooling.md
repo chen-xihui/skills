@@ -42,4 +42,4 @@
 | `skills/paas-cli/paas-cli.py` | 项目 Mock 入口（步骤 2 降级） |
 | `skills/bianque/bianque.py` | 项目 Mock 诊断入口 |
 
-> 历史目录 `.trae/skills/`、`.trae/tools/` 已移除。
+> 历史目录 `.trae/tools/` 已移除。各 IDE 安装副本见 `scripts/install-skills.sh`（Cursor `.cursor/skills/`、Qoder `.qoder/skills/`、TRAE `.trae/skills/`）；**源码**仍在仓库根 `skills/`。

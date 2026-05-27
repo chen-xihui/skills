@@ -2,6 +2,8 @@
 
 本目录包含 Redis 客户端的代码模板，覆盖 Java（Lettuce/Jedis × Standalone/Sentinel/Cluster）、Go、Python。
 
+**平台字段（能力一）**：生成前须 `$PAAS_CLI auth check`，再 `$PAAS_CLI redis config`；`Mode`、`Endpoints`、`Database`（及 Sentinel 的 `Master Name`）以 CLI 为准；密码仅用 `${REDIS_PASSWORD}`（CLI 脱敏，不向用户索要明文）。
+
 ## 模板总览
 
 | 语言/框架 | 部署模式 | 详细文档 |

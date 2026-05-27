@@ -184,14 +184,12 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| auth_user | 是 | — | 用户名 |
-| auth_pass | 是 | — | 密码 |
 | target_path | 是 | — | 生成路径 |
 | language | 否 | Java | Java/Go/Python |
 
-平台字段（CLI，禁止用户覆盖）：`server_addr`、`namespace` 来自 `nacos config`；`auth_user` 来自 `nacos config` 的 `Username`；密码仅用 `${NACOS_PASSWORD}`（CLI 脱敏，不向用户索要明文）
+平台字段（CLI，禁止用户覆盖）：`server_addr`、`namespace`、`Username` 来自 `nacos config`；密码仅用 `${NACOS_PASSWORD}`（CLI 脱敏，不向用户索要明文）
 
-流程：参数收集 → `paas-cli auth check`（阻塞）→ `paas-cli nacos config` 拉连接信息与用户名 → 按语言生成代码 → 写入 → 依赖提示
+流程：参数收集 → `$PAAS_CLI auth check`（阻塞）→ `$PAAS_CLI nacos config` → 按语言生成 → 写入 → 依赖提示
 
 ### 7.2 代码审计规则
 
@@ -220,7 +218,7 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 
 ### 7.4 故障排查
 
-流程：信息收集 → `paas-cli nacos info` 检查状态 → `bianque diagnose --middleware nacos --check health,raft,log` → 补充查询 → 分析建议
+流程：信息收集 → `$PAAS_CLI nacos info` → `$BIANQUE nacos check -n {namespace} -i {instance} -v true` → 补充查询 → 分析建议
 
 诊断项：集群健康度 | 日志分析 | 主备状态 | 客户端连通性
 
@@ -234,13 +232,14 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| password | 是 | — | Redis 密码 |
 | target_path | 是 | — | 生成路径 |
-| mode | 否 | standalone | standalone/sentinel/cluster |
+| mode | 否 | — | 部署模式提示；**以 CLI `Mode` 为准** |
 | client_type | 否 | lettuce | jedis/lettuce |
 | language | 否 | Java | Java/Go/Python |
 
-流程：参数收集 → `paas-cli redis config` → 按 mode/client_type/language 组合生成代码 → 写入 → 依赖提示
+平台字段（CLI，禁止用户覆盖）：`Mode`、`Endpoints`、`Database`（Sentinel 含 `Master Name`）来自 `redis config`；密码仅用 `${REDIS_PASSWORD}`
+
+流程：参数收集 → `$PAAS_CLI auth check` → `$PAAS_CLI redis config` → 按 CLI Mode 与 language/client_type 生成 → 写入 → 依赖提示
 
 ### 8.2 代码审计规则
 
@@ -271,7 +270,7 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 
 ### 8.4 故障排查
 
-流程：信息收集 → `paas-cli redis info` → `bianque diagnose --middleware redis --check slowlog,memory,replication` → 补充查询 → 分析建议
+流程：信息收集 → `$PAAS_CLI redis info` → `$BIANQUE redis check -n {namespace} -i {instance} -t {type} -v true` → 补充查询 → 分析建议
 
 诊断项：慢查询 | 内存碎片率 | 主从延迟 | 持久化状态 | 故障转移
 
@@ -285,13 +284,14 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 |------|------|------|------|
 | project_id | 是 | — | 项目组编号 |
 | env | 是 | — | DEV/SIT/SRV |
-| auth_user | 是 | — | 用户名 |
-| auth_pass | 是 | — | 密码 |
 | target_path | 是 | — | 生成路径 |
-| client_version | 否 | new | new(ElasticsearchClient 8.x+)/old(RestHighLevelClient 7.x) |
-| language | 否 | Java | Java/Go/Python |
+| client_version | 否 | — | new(8.x)/old(7.x)；可参考 CLI `Version` |
+| java_stack | 否 | elasticsearch-java | Java 专用：elasticsearch-java / spring-data / bboss / rhlc |
+| language | 否 | Java | Java/Go/Python/Node.js |
 
-流程：参数收集 → `paas-cli es config` → 按 client_version/language 生成代码 → 写入 → 依赖提示
+平台字段（CLI，禁止用户覆盖）：`Hosts`、`Scheme`、`Username` 来自 `es config`；密码仅用 `${ES_PASSWORD}`
+
+流程：参数收集（含 java_stack）→ `$PAAS_CLI auth check` → `$PAAS_CLI es config` → 按模板索引生成 → 写入 → 依赖提示
 
 ### 9.2 代码审计规则
 
@@ -322,7 +322,7 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 
 ### 9.4 故障排查
 
-流程：信息收集 → `paas-cli es info` → `bianque diagnose --middleware es --check cluster-health,shard,cpu,watermark` → 补充查询 → 分析建议
+流程：信息收集 → `$PAAS_CLI es info` → `$BIANQUE elasticsearch check -n {namespace} -i {instance} -v true` → 补充查询 → 分析建议
 
 诊断项：集群健康(Red/Yellow/Green) | 未分配分片 | CPU 热点 | 写入拒绝 | 索引健康
 
@@ -333,7 +333,7 @@ description: "{中间件}技能：客户端创建、代码审查、集群操作�
 | 工具 | 调用方式 | 超时 | 降级方案 |
 |------|---------|------|---------|
 | paas-cli | 终端命令执行 | 30s | 提示安装/检查网络 |
-| 扁鹊 | `bianque diagnose --middleware {type} --project {pid} --env {env} --check {items}` | 60s | 回退到 paas-cli 基本查询 |
+| 扁鹊（bianque Skill） | `$BIANQUE {nacos\|redis\|elasticsearch} check ...`（见 `skills/bianque/SKILL.md`） | 60s | 回退到 `$PAAS_CLI` 基本查询 |
 
 **前置检查**：`paas-cli --version` → `bianque --version` → `paas-cli ping`
 
@@ -402,7 +402,7 @@ Skill 即结构化 Prompt：角色设定（name/description）→ 任务分解�
 | 工具 | 调用方式 | 超时 | 降级方案 |
 |------|---------|------|---------|
 | paas-cli Skill | 遵循 `skills/paas-cli/SKILL.md` 编排 `$PAAS_CLI` 后终端执行 | 30s | 提示查阅 paas-cli Skill / 检查网络 |
-| 扁鹊 | `bianque diagnose --middleware {type} --project {pid} --env {env} --check {items}` | 60s | 回退到 paas-cli 基本查询 |
+| 扁鹊（bianque Skill） | `$BIANQUE {nacos\|redis\|elasticsearch} check ...`（见 `skills/bianque/SKILL.md`） | 60s | 回退到 `$PAAS_CLI` 基本查询 |
 
 **CLI 委托**：中间件 Skill 须先遵循 **paas-cli Skill**（见 `paas-cli-skill-delegation.md`）。`$PAAS_CLI` 解析顺序：① `paas-cli version` 成功 → ② 降级 `python3 skills/paas-cli/paas-cli.py version`
 
@@ -514,13 +514,20 @@ Skill 即结构化 Prompt：角色设定（name/description）→ 任务分解�
 
 ## 16. 分发策略
 
-**仓库路径映射**：分发仓库 `skills/` → 安装目标 `.trae/skills/`（Qoder IDE 约定）
+**仓库路径映射**：源码目录 `skills/` → 各 Agent 发现目录（**复制安装**，见 `scripts/install-skills.sh`）
 
-| 安装方式 | 命令/操作 | 适用场景 |
-|---------|----------|---------|
-| 一键安装 | `npx skills add <org>/middleware-skills/middleware-nacos` | 个人开发者 |
-| Git 子模块 | `git submodule add <repo-url> .trae/skills-external/middleware-skills` + 符号链接 | 团队协作 |
-| 手动复制 | 复制 SKILL.md 到 `.trae/skills/` | 离线/临时 |
+| Agent | 项目级目标 | 安装命令 |
+|-------|-----------|----------|
+| Cursor | `.cursor/skills/` | `./scripts/install-skills.sh cursor` |
+| Qoder | `.qoder/skills/` | `./scripts/install-skills.sh qoder` |
+| Qoder 用户级 | `~/.qoder/skills/` | `./scripts/install-skills.sh qoder --global` |
+| TRAE | `.trae/skills/` | `./scripts/install-skills.sh trae` |
+| 全部 | 上表三者 | `./scripts/install-skills.sh all` |
+
+| 其他方式 | 说明 |
+|---------|------|
+| Git 子模块 | 将本仓库作为子模块放入业务项目，再执行 `install-skills.sh --project-dir <app>` |
+| 手动复制 | 等价于脚本内部的 `cp -R skills/ → 目标目录` |
 
 **定制覆盖**：`skills-custom/` 优先于 `skills/`，同名 Skill 覆盖标准版本
 
