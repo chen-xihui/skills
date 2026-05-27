@@ -1,0 +1,13 @@
+resource: activestrategy
+action: create
+params:
+  name: active-strategy-test001
+  clusterType: cluster
+  clusterCnt: 2
+  clusters:
+    - 1/wxx/cluster-active-0
+    - 1/wxx/cluster-active-1
+  failoverRecover: auto
+  sharedDownRecover: auto
+  enableHealthCheck: true
+  proxyReadMode: preferLogicMaster

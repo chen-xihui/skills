@@ -1,0 +1,57 @@
+package com.example.redis.config;
+
+import io.lettuce.core.ClientOptions;
+import io.lettuce.core.SocketOptions;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.time.Duration;
+
+@Configuration
+public class RedisConfig {
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory(RedisProperties props) {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setHostName(props.getHost());
+        config.setPort(props.getPort());
+        config.setPassword(props.getPassword());
+
+        SocketOptions socketOptions = SocketOptions.builder()
+            .connectTimeout(Duration.ofMillis(5000))  // 连接超时 5s
+            .keepAlive(true)
+            .build();
+
+        ClientOptions clientOptions = ClientOptions.builder()
+            .socketOptions(socketOptions)
+            .autoReconnect(true)
+            .build();
+
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+            .commandTimeout(Duration.ofMillis(props.getTimeout().toMillis()))
+            .clientOptions(clientOptions)
+            .build();
+
+        return new LettuceConnectionFactory(config, clientConfig);
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.afterPropertiesSet();
+        return template;
+    }
+}

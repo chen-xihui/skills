@@ -1,0 +1,21 @@
+spring:
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:A12345*}
+    database: 0
+    timeout: 3000ms
+    # standalone 模式配置
+    # host: ${REDIS_HOST:127.0.0.1}
+    # port: ${REDIS_PORT:6379}
+    
+    # sentinel 模式配置
+    # sentinel:
+    #   master: mymaster
+    #   nodes: ${REDIS_SENTINEL_NODES:sentinel1:26379,sentinel2:26379,sentinel3:26379}
+    #   read-mode: slave
+    
+    # cluster 模式配置
+    # cluster:
+    #   nodes: ${REDIS_CLUSTER_NODES:node1:6379,node2:6379,node3:6379}
+    #   max-redirects: 3
