@@ -23,22 +23,25 @@ Lettuce 是 Redis 的高级 Java 客户端，支持同步、异步和响应式 A
 
 ## 审计规则
 
+### Lettuce 专属规则
+
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
-| REDIS-001 | 禁止在循环中使用 keys * | 🔴 严重 |
-| REDIS-002 | 大 Key 风险检查（>10KB） | 🟡 警告 |
-| REDIS-003 | 热 Key 风险检查 | 🟡 警告 |
-| REDIS-004 | 连接池参数合理性 | 🟡 警告 |
-| REDIS-005 | Pipeline 批量使用 | 🔵 建议 |
-| REDIS-006 | Lua 脚本使用 EVALSHA | 🔵 建议 |
-| REDIS-007 | 合理设置过期时间 | 🟡 警告 |
-| REDIS-008 | 禁止密码硬编码 | 🔴 严重 |
-| REDIS-009 | 禁止高危命令 | 🔴 严重 |
-| REDIS-010 | 禁止 Keys 全库匹配 | 🔴 严重 |
-| REDIS-011 | 高时间复杂度命令 | 🟡 警告 |
-| REDIS-012 | Key 命名规范 | 🔵 建议 |
-| REDIS-013 | 大 Key 集合检查 | 🟡 警告 |
-| REDIS-014 | 事务命令使用检查 | 🟡 警告 |
+| LETTUCE-001 | 阻塞命令（BLPOP、SUBSCRIBE、XREAD）必须使用独立连接 | 🔴 严重 |
+| LETTUCE-002 | Cluster 模式必须配置 ClusterTopologyRefreshOptions | 🔴 严重 |
+| LETTUCE-003 | 应用退出时必须调用 RedisClient.shutdown() 释放 Netty 线程 | 🔴 严重 |
+| LETTUCE-004 | 必须配置 SocketOptions.keepAlive(true) | 🟡 风险 |
+| LETTUCE-005 | 建议开启 pingBeforeActivateConnection(true) | 🟡 风险 |
+| LETTUCE-006 | 必须显式设置 commandTimeout | 🟡 风险 |
+| LETTUCE-007 | shareNativeConnection=true 需明确配置连接模式 | 🔵 提示 |
+
+### 集群通用规则
+
+| 规则ID | 规则描述 | 风险等级 |
+|--------|---------|---------|
+| CLUSTER-001 | maxAttempts 应设置 3-5，禁止过大值 | 🔴 严重 |
+| CLUSTER-002 | 集群总连接数 = 节点数 × maxTotal，必须评估 | 🟡 风险 |
+| CLUSTER-003 | 禁止业务层重试循环包裹集群调用 | 🟡 风险 |
 
 详细规则：[rules/index.md](./rules/index.md)
 
@@ -53,7 +56,12 @@ Lettuce 是 Redis 的高级 Java 客户端，支持同步、异步和响应式 A
 ### 检查代码
 
 ```bash
-python scripts/check_code.py --path ./src --client lettuce
+# 运行全部检查
+python scripts/check_all.py ./src
+
+# 运行单项检查
+python scripts/check_lettuce_001.py ./src
+python scripts/check_cluster_001.py ./src
 ```
 
 ## 依赖说明

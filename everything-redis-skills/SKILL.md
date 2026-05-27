@@ -21,7 +21,7 @@ dependency:
 | 能力 | 触发场景 | 详细说明 |
 |------|---------|---------|
 | [客户端代码生成](./client-code-generator/index.md) | "创建 Redis 客户端"、"生成缓存代码"、"帮我配置 Jedis/Lettuce/Redisson" | 根据客户端类型生成对应代码模板 |
-| [代码审计检查](./client-code-generator/Jedis/rules/index.md) | "检查 Redis 代码"、"代码优化"、"审计" | 14 条审计规则覆盖常见问题 |
+| [代码审计检查](./client-code-generator/index.md) | "检查 Redis 代码"、"代码优化"、"审计" | 32 条客户端专属 + 集群通用审计规则 |
 | [Redis 连接信息获取](./client-redis-paas-tools/README.md) | "获取 Redis 地址"、"查看 Redis 配置" | 通过命令行获取连接信息 |
 
 ## 前置准备
@@ -70,7 +70,11 @@ dependency:
 
 生成代码后，使用审计规则检查：
 ```bash
-python client-code-generator/Jedis/scripts/check_code.py --path ./src
+# 运行全部检查
+python client-code-generator/<客户端>/scripts/check_all.py ./src
+
+# 运行单项检查
+python client-code-generator/<客户端>/scripts/check_jedis_001.py ./src
 ```
 
 ## 目录结构
@@ -81,13 +85,13 @@ everything-redis-skills/
 ├── client-code-generator/             # 客户端代码生成
 │   ├── index.md                       # 能力索引与触发规则
 │   ├── Jedis/                         # Jedis 客户端
-│   │   ├── rules/                    # 审计规则（REDIS-001~014）
+│   │   ├── rules/                    # 审计规则（JEDIS-001~014, CLUSTER-001~003）
 │   │   ├── code-template/            # 代码模板
-│   │   ├── scripts/                  # 检查脚本
+│   │   ├── scripts/                  # 检查脚本（check_all.py + 单项脚本）
 │   │   └── index.md                  # 子能力说明
-│   ├── Lettuce/                      # Lettuce 客户端
-│   ├── Redisson/                     # Redisson 客户端
-│   └── SpringDataRedis/              # Spring Data Redis 客户端
+│   ├── Lettuce/                      # Lettuce 客户端（LETTUCE-001~007, CLUSTER-001~003）
+│   ├── Redisson/                     # Redisson 客户端（REDISSON-001~005, CLUSTER-001~003）
+│   └── SpringDataRedis/              # Spring Data Redis 客户端（SDR-001~003, CLUSTER-001~003）
 └── client-redis-paas-tools/          # Redis 连接工具
     ├── paas-cli.py                   # 命令行工具（mock）
     └── config/                       # 配置文件
@@ -102,5 +106,5 @@ everything-redis-skills/
 
 ## 参考资料
 
-- Redis 审计规则详情：[client-code-generator/Jedis/rules/index.md](./client-code-generator/Jedis/rules/index.md)
+- Redis 审计规则详情：[Jedis](./client-code-generator/Jedis/rules/index.md) | [Lettuce](./client-code-generator/Lettuce/rules/index.md) | [Redisson](./client-code-generator/Redisson/rules/index.md) | [SpringDataRedis](./client-code-generator/SpringDataRedis/rules/index.md)
 - 代码模板索引：[client-code-generator/Jedis/code-template/index.md](./client-code-generator/Jedis/code-template/index.md)

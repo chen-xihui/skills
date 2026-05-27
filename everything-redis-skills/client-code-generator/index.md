@@ -69,9 +69,23 @@
 
 ## 审计规则
 
-所有客户端代码均需通过以下 14 条审计规则：
-- 🔴 严重：REDIS-001、REDIS-008、REDIS-009、REDIS-010
-- 🟡 警告：REDIS-002、REDIS-003、REDIS-004、REDIS-007、REDIS-011、REDIS-013、REDIS-014
-- 🔵 建议：REDIS-005、REDIS-006、REDIS-012
+各客户端代码均需通过对应的专属审计规则和集群通用规则，规则按客户端类型划分：
 
-详见：[Jedis/rules/index.md](./Jedis/rules/index.md)
+| 客户端 | 专属规则 | 严重 | 风险 | 提示 | 集群规则 |
+|--------|---------|------|------|------|---------|
+| Jedis | JEDIS-001 ~ JEDIS-014 | 6 | 6 | 2 | CLUSTER-001 ~ CLUSTER-003 |
+| Lettuce | LETTUCE-001 ~ LETTUCE-007 | 3 | 3 | 1 | CLUSTER-001 ~ CLUSTER-003 |
+| Redisson | REDISSON-001 ~ REDISSON-005 | 3 | 2 | 0 | CLUSTER-001 ~ CLUSTER-003 |
+| Spring Data Redis | SDR-001 ~ SDR-003 | 1 | 2 | 0 | CLUSTER-001 ~ CLUSTER-003 |
+
+### 全局风险等级统计
+
+- 🔴 **严重**: 15 条（JEDIS-001~006, LETTUCE-001~003, REDISSON-001~003, SDR-001, CLUSTER-001）
+- 🟡 **风险**: 14 条（JEDIS-007~012, LETTUCE-004~006, REDISSON-004~005, SDR-002~003, CLUSTER-002~003）
+- 🔵 **提示**: 3 条（JEDIS-013~014, LETTUCE-007）
+
+详见：
+- [Jedis/rules/index.md](./Jedis/rules/index.md)
+- [Lettuce/rules/index.md](./Lettuce/rules/index.md)
+- [Redisson/rules/index.md](./Redisson/rules/index.md)
+- [SpringDataRedis/rules/index.md](./SpringDataRedis/rules/index.md)
