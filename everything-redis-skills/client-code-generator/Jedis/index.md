@@ -22,22 +22,32 @@ Jedis 是 Redis 的轻量级 Java 客户端，提供同步阻塞的 API 风格�
 
 ## 审计规则
 
+### Jedis 专属规则
+
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
-| REDIS-001 | 禁止在循环中使用 keys * | 🔴 严重 |
-| REDIS-002 | 大 Key 风险检查（>10KB） | 🟡 警告 |
-| REDIS-003 | 热 Key 风险检查 | 🟡 警告 |
-| REDIS-004 | 连接池参数合理性 | 🟡 警告 |
-| REDIS-005 | Pipeline 批量使用 | 🔵 建议 |
-| REDIS-006 | Lua 脚本使用 EVALSHA | 🔵 建议 |
-| REDIS-007 | 合理设置过期时间 | 🟡 警告 |
-| REDIS-008 | 禁止密码硬编码 | 🔴 严重 |
-| REDIS-009 | 禁止高危命令 | 🔴 严重 |
-| REDIS-010 | 禁止 Keys 全库匹配 | 🔴 严重 |
-| REDIS-011 | 高时间复杂度命令 | 🟡 警告 |
-| REDIS-012 | Key 命名规范 | 🔵 建议 |
-| REDIS-013 | 大 Key 集合检查 | 🟡 警告 |
-| REDIS-014 | 事务命令使用检查 | 🟡 警告 |
+| JEDIS-001 | 禁止使用 KEYS 命令，应使用 SCAN | 🔴 严重 |
+| JEDIS-002 | getResource() 必须使用 try-with-resources 防止连接泄漏 | 🔴 严重 |
+| JEDIS-003 | 禁止在循环中创建连接（Jedis、JedisPool、RedissonClient） | 🔴 严重 |
+| JEDIS-004 | Pipeline 必须调用 close() 或使用 try-with-resources | 🔴 严重 |
+| JEDIS-005 | MULTI/EXEC 异常后必须调用 discard() 清理连接状态 | 🔴 严重 |
+| JEDIS-006 | 禁止运行时执行 CONFIG SET / CONFIG REWRITE | 🔴 严重 |
+| JEDIS-007 | JedisPoolConfig 必须配置四项核心参数（maxTotal、maxIdle、minIdle、maxWaitMillis） | 🟡 风险 |
+| JEDIS-008 | 必须开启 setTestWhileIdle(true) 检测失效连接 | 🟡 风险 |
+| JEDIS-009 | Pipeline 批量命令数应控制在 100-1000 以内 | 🟡 风险 |
+| JEDIS-010 | 禁止无限重试循环包裹 Redis 调用 | 🟡 风险 |
+| JEDIS-011 | 禁止业务层重试循环包裹 jedisCluster 调用 | 🟡 风险 |
+| JEDIS-012 | 必须设置 commandTimeout 命令超时时间 | 🟡 风险 |
+| JEDIS-013 | 建议开启 setTestOnBorrow(true) 连接借用检测 | 🔵 提示 |
+| JEDIS-014 | Lua 脚本必须使用 SCRIPT LOAD + EVALSHA | 🔵 提示 |
+
+### 集群通用规则
+
+| 规则ID | 规则描述 | 风险等级 |
+|--------|---------|---------|
+| CLUSTER-001 | maxAttempts 应设置 3-5，禁止过大值 | 🔴 严重 |
+| CLUSTER-002 | 集群总连接数 = 节点数 × maxTotal，必须评估 | 🟡 风险 |
+| CLUSTER-003 | 禁止业务层重试循环包裹集群调用 | 🟡 风险 |
 
 详细规则：[rules/index.md](./rules/index.md)
 
@@ -52,7 +62,12 @@ Jedis 是 Redis 的轻量级 Java 客户端，提供同步阻塞的 API 风格�
 ### 检查代码
 
 ```bash
-python scripts/check_code.py --path ./src --client jedis
+# 运行全部检查
+python scripts/check_all.py ./src
+
+# 运行单项检查
+python scripts/check_jedis_001.py ./src
+python scripts/check_cluster_001.py ./src
 ```
 
 ## 依赖说明

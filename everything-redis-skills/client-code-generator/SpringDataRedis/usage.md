@@ -7,7 +7,7 @@
 ```
 SpringDataRedis/
 ├── index.md          # 子能力说明
-├── rules/            # 审计规则（REDIS-001 ~ REDIS-014）
+├── rules/            # 审计规则（SDR-001 ~ SDR-003, CLUSTER-001 ~ CLUSTER-003）
 ├── code-template/    # 代码模板
 ├── scripts/          # 代码检查工具
 └── usage.md          # 本文件
@@ -15,24 +15,16 @@ SpringDataRedis/
 
 ## 规则说明
 
-[rules/](rules/) 目录包含 14 条审计规则，用于检查代码是否符合 Redis 最佳实践：
+[rules/](rules/) 目录包含 Spring Data Redis 专属审计规则和集群通用规则：
 
 | 规则ID | 风险等级 | 说明 |
 |--------|---------|------|
-| REDIS-001 | 🔴 严重 | 禁止使用 keys * |
-| REDIS-002 | 🟡 警告 | 大 Key 风险检查 |
-| REDIS-003 | 🟡 警告 | 热 Key 风险检查 |
-| REDIS-004 | 🟡 警告 | 连接池参数合理性 |
-| REDIS-005 | 🔵 建议 | Pipeline 批量使用 |
-| REDIS-006 | 🔵 建议 | Lua 脚本优化 |
-| REDIS-007 | 🟡 警告 | 过期时间设置 |
-| REDIS-008 | 🔴 严重 | 密码硬编码检查 |
-| REDIS-009 | 🔴 严重 | 高危命令禁止 |
-| REDIS-010 | 🔴 严重 | Keys 全库匹配禁止 |
-| REDIS-011 | 🟡 警告 | 高时间复杂度命令 |
-| REDIS-012 | 🔵 建议 | Key 命名规范 |
-| REDIS-013 | 🟡 警告 | 大 Key 集合检查 |
-| REDIS-014 | 🟡 警告 | 事务命令检查 |
+| SDR-001 | 🔴 严重 | RedisTemplate 必须配置序列化方式 |
+| SDR-002 | 🟡 风险 | 禁止使用 keys()，应使用 SCAN |
+| SDR-003 | 🟡 风险 | LettuceConnectionFactory 必须配置 commandTimeout |
+| CLUSTER-001 | 🔴 严重 | maxAttempts 应设置 3-5 |
+| CLUSTER-002 | 🟡 风险 | 集群总连接数必须评估 |
+| CLUSTER-003 | 🟡 风险 | 禁止业务层重试集群调用 |
 
 ## 代码模板说明
 
@@ -47,11 +39,17 @@ SpringDataRedis/
 
 [scripts/](scripts/) 目录包含：
 
-- `check_code.py` - 代码审计脚本
+- `check_all.py` - 汇总检查脚本（运行所有规则）
+- `check_sdr_001.py` ~ `check_sdr_003.py` - Spring Data Redis 专属检查脚本
+- `check_cluster_001.py` ~ `check_cluster_003.py` - 集群通用检查脚本
 
 使用方式：
 ```bash
-python scripts/check_code.py --path ./src --client springdata
+# 运行全部检查
+python scripts/check_all.py ./src
+
+# 运行单项检查
+python scripts/check_sdr_001.py ./src
 ```
 
 ## 依赖说明

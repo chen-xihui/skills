@@ -1,35 +1,43 @@
-# Redis 代码优化检查规则索引
+# Jedis 代码审计规则索引
 
-本目录包含 REDIS-001 ~ REDIS-014 共 14 条检查规则的详细说明和检查方法。
+本目录包含 Jedis 客户端专属规则（JEDIS-001 ~ JEDIS-014）和集群通用规则（CLUSTER-001 ~ CLUSTER-003）的详细说明和检查方法。
 
-## 规则总览
+## Jedis 专属规则
 
 | 规则ID | 规则描述 | 风险等级 | 详细文档 |
 |--------|---------|---------|---------|
-| REDIS-001 | 禁止在循环中使用 `keys *`，应使用 `scan` | 🔴 严重 | [REDIS-001.md](./REDIS-001.md) |
-| REDIS-002 | 大 Key 风险检查（单次操作 Value 超过 10KB 应拆分或压缩） | 🟡 警告 | [REDIS-002.md](./REDIS-002.md) |
-| REDIS-003 | 热 Key 风险检查（高频读写的 Key 应考虑本地缓存） | 🟡 警告 | [REDIS-003.md](./REDIS-003.md) |
-| REDIS-004 | 连接池参数合理性（maxTotal、maxIdle、maxWaitMillis） | 🟡 警告 | [REDIS-004.md](./REDIS-004.md) |
-| REDIS-005 | Pipeline 批量使用情况（多次独立命令应使用 Pipeline） | 🔵 建议 | [REDIS-005.md](./REDIS-005.md) |
-| REDIS-006 | Lua 脚本是否使用 EVALSHA 预加载（而非每次 EVAL） | 🔵 建议 | [REDIS-006.md](./REDIS-006.md) |
-| REDIS-007 | 是否设置合理的过期时间（避免 Key 永不过期导致内存泄漏） | 🟡 警告 | [REDIS-007.md](./REDIS-007.md) |
-| REDIS-008 | 密码是否硬编码 | 🔴 严重 | [REDIS-008.md](./REDIS-008.md) |
-| REDIS-009 | 禁止使用 CONFIG、FLUSHALL、FLUSHDB 等高危命令 | 🔴 严重 | [REDIS-009.md](./REDIS-009.md) |
-| REDIS-010 | 禁止使用 Keys 全库匹配命令 | 🔴 严重 | [REDIS-010.md](./REDIS-010.md) |
-| REDIS-011 | 避免使用集合整存整取与高时间复杂度命令 | 🟡 警告 | [REDIS-011.md](./REDIS-011.md) |
-| REDIS-012 | Key 命名规范检查 | 🔵 建议 | [REDIS-012.md](./REDIS-012.md) |
-| REDIS-013 | 大 Key 集合对象检查（建议控制在 5000 项以内） | 🟡 警告 | [REDIS-013.md](./REDIS-013.md) |
-| REDIS-014 | 事务命令使用检查 | 🟡 警告 | [REDIS-014.md](./REDIS-014.md) |
+| JEDIS-001 | 禁止使用 KEYS 命令，应使用 SCAN | 🔴 严重 | [JEDIS-001.md](./JEDIS-001.md) |
+| JEDIS-002 | getResource() 必须使用 try-with-resources 防止连接泄漏 | 🔴 严重 | [JEDIS-002.md](./JEDIS-002.md) |
+| JEDIS-003 | 禁止在循环中创建连接（Jedis、JedisPool、RedissonClient） | 🔴 严重 | [JEDIS-003.md](./JEDIS-003.md) |
+| JEDIS-004 | Pipeline 必须调用 close() 或使用 try-with-resources | 🔴 严重 | [JEDIS-004.md](./JEDIS-004.md) |
+| JEDIS-005 | MULTI/EXEC 异常后必须调用 discard() 清理连接状态 | 🔴 严重 | [JEDIS-005.md](./JEDIS-005.md) |
+| JEDIS-006 | 禁止运行时执行 CONFIG SET / CONFIG REWRITE | 🔴 严重 | [JEDIS-006.md](./JEDIS-006.md) |
+| JEDIS-007 | JedisPoolConfig 必须配置四项核心参数（maxTotal、maxIdle、minIdle、maxWaitMillis） | 🟡 风险 | [JEDIS-007.md](./JEDIS-007.md) |
+| JEDIS-008 | 必须开启 setTestWhileIdle(true) 检测失效连接 | 🟡 风险 | [JEDIS-008.md](./JEDIS-008.md) |
+| JEDIS-009 | Pipeline 批量命令数应控制在 100-1000 以内 | 🟡 风险 | [JEDIS-009.md](./JEDIS-009.md) |
+| JEDIS-010 | 禁止无限重试循环包裹 Redis 调用 | 🟡 风险 | [JEDIS-010.md](./JEDIS-010.md) |
+| JEDIS-011 | 禁止业务层重试循环包裹 jedisCluster 调用 | 🟡 风险 | [JEDIS-011.md](./JEDIS-011.md) |
+| JEDIS-012 | 必须设置 commandTimeout 命令超时时间 | 🟡 风险 | [JEDIS-012.md](./JEDIS-012.md) |
+| JEDIS-013 | 建议开启 setTestOnBorrow(true) 连接借用检测 | 🔵 提示 | [JEDIS-013.md](./JEDIS-013.md) |
+| JEDIS-014 | Lua 脚本必须使用 SCRIPT LOAD + EVALSHA | 🔵 提示 | [JEDIS-014.md](./JEDIS-014.md) |
+
+## 集群通用规则
+
+| 规则ID | 规则描述 | 风险等级 | 详细文档 |
+|--------|---------|---------|---------|
+| CLUSTER-001 | maxAttempts 应设置 3-5，禁止过大值 | 🔴 严重 | [CLUSTER-001.md](./CLUSTER-001.md) |
+| CLUSTER-002 | 集群总连接数 = 节点数 × maxTotal，必须评估 | 🟡 风险 | [CLUSTER-002.md](./CLUSTER-002.md) |
+| CLUSTER-003 | 禁止业务层重试循环包裹集群调用 | 🟡 风险 | [CLUSTER-003.md](./CLUSTER-003.md) |
 
 ## 风险等级统计
 
-- 🔴 **严重**: 4 条（REDIS-001、REDIS-008、REDIS-009、REDIS-010）
-- 🟡 **警告**: 7 条（REDIS-002、REDIS-003、REDIS-004、REDIS-007、REDIS-011、REDIS-013、REDIS-014）
-- 🔵 **建议**: 3 条（REDIS-005、REDIS-006、REDIS-012）
+- 🔴 **严重**: 7 条（JEDIS-001~006, CLUSTER-001）
+- 🟡 **风险**: 9 条（JEDIS-007~012, CLUSTER-002~003）
+- 🔵 **提示**: 2 条（JEDIS-013, JEDIS-014）
 
 ## 检查流程
 
 1. 确认扫描路径
-2. 识别 Redis 客户端类型（Lettuce / Jedis）
-3. 按 REDIS-001 ~ REDIS-014 逐项搜索检查
+2. 运行 `python scripts/check_all.py <项目根目录>` 执行全部检查
+3. 或运行单项检查，如 `python scripts/check_jedis_001.py <项目根目录>`
 4. 生成结构化审计报告，按风险等级排序（🔴 → 🟡 → 🔵）

@@ -23,16 +23,23 @@ Redisson 是 Redis 的高级 Java 客户端，基于 Netty 实现，提供分布
 
 ## 审计规则
 
+### Redisson 专属规则
+
 | 规则ID | 规则描述 | 风险等级 |
 |--------|---------|---------|
-| REDIS-001 | 禁止在循环中使用 keys * | 🔴 严重 |
-| REDIS-002 | 大 Key 风险检查（>10KB） | 🟡 警告 |
-| REDIS-003 | 热 Key 风险检查 | 🟡 警告 |
-| REDIS-007 | 合理设置过期时间 | 🟡 警告 |
-| REDIS-008 | 禁止密码硬编码 | 🔴 严重 |
-| REDIS-009 | 禁止高危命令 | 🔴 严重 |
-| REDIS-010 | 禁止 Keys 全库匹配 | 🔴 严重 |
-| REDIS-012 | Key 命名规范 | 🔵 建议 |
+| REDISSON-001 | lock() 必须设置 leaseTime，防止锁永久持有 | 🔴 严重 |
+| REDISSON-002 | RedissonClient 必须单例，禁止循环内创建 | 🔴 严重 |
+| REDISSON-003 | 必须调用 redisson.shutdown() 释放 Netty 线程 | 🔴 严重 |
+| REDISSON-004 | 配置文件中必须设置 keepAlive: true | 🟡 风险 |
+| REDISSON-005 | tryLock 必须设置 waitTime 和 leaseTime | 🟡 风险 |
+
+### 集群通用规则
+
+| 规则ID | 规则描述 | 风险等级 |
+|--------|---------|---------|
+| CLUSTER-001 | maxAttempts 应设置 3-5，禁止过大值 | 🔴 严重 |
+| CLUSTER-002 | 集群总连接数 = 节点数 × maxTotal，必须评估 | 🟡 风险 |
+| CLUSTER-003 | 禁止业务层重试循环包裹集群调用 | 🟡 风险 |
 
 详细规则：[rules/index.md](./rules/index.md)
 

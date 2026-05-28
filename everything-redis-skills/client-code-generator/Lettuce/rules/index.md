@@ -1,35 +1,36 @@
-# Redis 代码优化检查规则索引
+# Lettuce 代码审计规则索引
 
-本目录包含 REDIS-001 ~ REDIS-014 共 14 条检查规则的详细说明和检查方法。
+本目录包含 Lettuce 客户端专属规则（LETTUCE-001 ~ LETTUCE-007）和集群通用规则（CLUSTER-001 ~ CLUSTER-003）的详细说明和检查方法。
 
-## 规则总览
+## Lettuce 专属规则
 
 | 规则ID | 规则描述 | 风险等级 | 详细文档 |
 |--------|---------|---------|---------|
-| REDIS-001 | 禁止在循环中使用 `keys *`，应使用 `scan` | 🔴 严重 | [REDIS-001.md](./REDIS-001.md) |
-| REDIS-002 | 大 Key 风险检查（单次操作 Value 超过 10KB 应拆分或压缩） | 🟡 警告 | [REDIS-002.md](./REDIS-002.md) |
-| REDIS-003 | 热 Key 风险检查（高频读写的 Key 应考虑本地缓存） | 🟡 警告 | [REDIS-003.md](./REDIS-003.md) |
-| REDIS-004 | 连接池参数合理性（maxTotal、maxIdle、maxWaitMillis） | 🟡 警告 | [REDIS-004.md](./REDIS-004.md) |
-| REDIS-005 | Pipeline 批量使用情况（多次独立命令应使用 Pipeline） | 🔵 建议 | [REDIS-005.md](./REDIS-005.md) |
-| REDIS-006 | Lua 脚本是否使用 EVALSHA 预加载（而非每次 EVAL） | 🔵 建议 | [REDIS-006.md](./REDIS-006.md) |
-| REDIS-007 | 是否设置合理的过期时间（避免 Key 永不过期导致内存泄漏） | 🟡 警告 | [REDIS-007.md](./REDIS-007.md) |
-| REDIS-008 | 密码是否硬编码 | 🔴 严重 | [REDIS-008.md](./REDIS-008.md) |
-| REDIS-009 | 禁止使用 CONFIG、FLUSHALL、FLUSHDB 等高危命令 | 🔴 严重 | [REDIS-009.md](./REDIS-009.md) |
-| REDIS-010 | 禁止使用 Keys 全库匹配命令 | 🔴 严重 | [REDIS-010.md](./REDIS-010.md) |
-| REDIS-011 | 避免使用集合整存整取与高时间复杂度命令 | 🟡 警告 | [REDIS-011.md](./REDIS-011.md) |
-| REDIS-012 | Key 命名规范检查 | 🔵 建议 | [REDIS-012.md](./REDIS-012.md) |
-| REDIS-013 | 大 Key 集合对象检查（建议控制在 5000 项以内） | 🟡 警告 | [REDIS-013.md](./REDIS-013.md) |
-| REDIS-014 | 事务命令使用检查 | 🟡 警告 | [REDIS-014.md](./REDIS-014.md) |
+| LETTUCE-001 | 阻塞命令（BLPOP、SUBSCRIBE、XREAD）必须使用独立连接，不允许共享普通连接池 | 🔴 严重 | [LETTUCE-001.md](./LETTUCE-001.md) |
+| LETTUCE-002 | Redis Cluster 模式下必须配置 ClusterTopologyRefreshOptions | 🔴 严重 | [LETTUCE-002.md](./LETTUCE-002.md) |
+| LETTUCE-003 | 应用退出时必须调用 RedisClient.shutdown() 释放 Netty 线程 | 🔴 严重 | [LETTUCE-003.md](./LETTUCE-003.md) |
+| LETTUCE-004 | 必须配置 SocketOptions.keepAlive(true) | 🟡 风险 | [LETTUCE-004.md](./LETTUCE-004.md) |
+| LETTUCE-005 | 建议开启 pingBeforeActivateConnection(true) | 🟡 风险 | [LETTUCE-005.md](./LETTUCE-005.md) |
+| LETTUCE-006 | 必须显式设置 commandTimeout | 🟡 风险 | [LETTUCE-006.md](./LETTUCE-006.md) |
+| LETTUCE-007 | shareNativeConnection=true 需明确配置连接模式 | 🔵 提示 | [LETTUCE-007.md](./LETTUCE-007.md) |
+
+## 集群通用规则
+
+| 规则ID | 规则描述 | 风险等级 | 详细文档 |
+|--------|---------|---------|---------|
+| CLUSTER-001 | maxAttempts 应设置 3-5，禁止过大值 | 🔴 严重 | [CLUSTER-001.md](./CLUSTER-001.md) |
+| CLUSTER-002 | 集群总连接数 = 节点数 × maxTotal，必须评估 | 🟡 风险 | [CLUSTER-002.md](./CLUSTER-002.md) |
+| CLUSTER-003 | 禁止业务层重试循环包裹集群调用 | 🟡 风险 | [CLUSTER-003.md](./CLUSTER-003.md) |
 
 ## 风险等级统计
 
-- 🔴 **严重**: 4 条（REDIS-001、REDIS-008、REDIS-009、REDIS-010）
-- 🟡 **警告**: 7 条（REDIS-002、REDIS-003、REDIS-004、REDIS-007、REDIS-011、REDIS-013、REDIS-014）
-- 🔵 **建议**: 3 条（REDIS-005、REDIS-006、REDIS-012）
+- 🔴 **严重**: 4 条（LETTUCE-001~003, CLUSTER-001）
+- 🟡 **风险**: 5 条（LETTUCE-004~006, CLUSTER-002~003）
+- 🔵 **提示**: 1 条（LETTUCE-007）
 
 ## 检查流程
 
 1. 确认扫描路径
-2. 识别 Redis 客户端类型（Lettuce / Jedis）
-3. 按 REDIS-001 ~ REDIS-014 逐项搜索检查
+2. 运行 `python scripts/check_all.py <项目根目录>` 执行全部检查
+3. 或运行单项检查，如 `python scripts/check_lettuce_001.py <项目根目录>`
 4. 生成结构化审计报告，按风险等级排序（🔴 → 🟡 → 🔵）
