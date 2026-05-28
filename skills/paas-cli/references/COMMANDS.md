@@ -68,7 +68,7 @@ paas-cli nacos delete --project j036x0 --env DEV --service demo-service
 | `info` | 查看集群信息 | — |
 | `nodes` | 查看节点列表 | — |
 | `memory` | 查看内存详情 | — |
-| `config` | 查看连接配置 | `--mode cluster\|sentinel\|standalone` |
+| `config` | 查看连接配置 | `--mode cluster\|sentinel\|standalone`、`--format json` |
 | `config` | 修改内存策略 | `--maxmemory-policy <policy>` |
 | `create` | 创建实例 | `--mode standalone\|cluster` |
 | `scale` | 扩缩容 | `--replicas <n>` |
@@ -85,6 +85,7 @@ paas-cli redis info --project j036x0 --env DEV
 paas-cli redis nodes --project j036x0 --env DEV
 paas-cli redis memory --project j036x0 --env DEV
 paas-cli redis config --project j036x0 --env DEV --mode cluster
+paas-cli redis config --project j036x0 --env DEV --format json   # 机器可读 JSON（j036x0+DEV 自动检测本地 Docker Redis）
 paas-cli redis config --project j036x0 --env DEV --maxmemory-policy allkeys-lru
 paas-cli redis create --project j036x0 --env DEV --mode standalone
 paas-cli redis scale --project j036x0 --env DEV --replicas 5

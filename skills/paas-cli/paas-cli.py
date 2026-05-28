@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""paas-cli mock — simulates the real paas-cli for demo purposes."""
+"""paas-cli mock — simulates the real paas-cli for demo purposes.
+
+Redis lease commands (lease status/renew) and redis config interact with
+a real Docker-based Redis service when available; other commands are mock.
+"""
 
 import sys
 import json
 import random
 import os
+import subprocess
 from datetime import datetime, timedelta
 
 # Force UTF-8 output on Windows to avoid GBK encoding errors with emoji
@@ -12,10 +17,17 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
-VERSION = "2.4.1"
+VERSION = "2.5.0"
 
 # Script directory for resolving relative config paths
 _SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# ── Docker configuration for real Redis lease service ─────────────────────────
+_DOCKER_CONTAINER = "redis-lease-proxy"
+_DOCKER_REDIS_HOST = "localhost"
+_DOCKER_REDIS_PORT = "16379"
+_DOCKER_REDIS_PASSWORD = "lease_demo_2026"
+_DOCKER_LEASE_SCRIPT = "redis-lease-proxy.py"
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -40,6 +52,20 @@ def _env(args):
                 return args[i + 1]
     return "DEV"
 
+def _format(args):
+    """Check if --format json is specified."""
+    for i, a in enumerate(args):
+        if a == "--format" or a.startswith("--format="):
+            if "=" in a:
+                return a.split("=", 1)[1]
+            if i + 1 < len(args):
+                return args[i + 1]
+    return "text"
+
+def _is_local_dev(pid, env):
+    """Check if the project+env maps to local Docker Redis."""
+    return pid.lower() == "j036x0" and env.upper() == "DEV"
+
 def _param(args, name, default=""):
     for i, a in enumerate(args):
         if a.startswith(f"--{name}"):
@@ -48,6 +74,32 @@ def _param(args, name, default=""):
             if i + 1 < len(args):
                 return args[i + 1]
     return default
+
+# ── Docker interaction helpers ────────────────────────────────────────────────
+
+def _docker_available():
+    """Check if the Docker Redis lease container is running."""
+    try:
+        result = subprocess.run(
+            ["docker", "ps", "-q", "-f", f"name={_DOCKER_CONTAINER}"],
+            capture_output=True, text=True, timeout=5
+        )
+        return bool(result.stdout.strip())
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+
+def _docker_exec_lease(*args):
+    """Execute redis-lease-proxy.py inside the Docker container.
+    Returns (success: bool, output: str).
+    """
+    if not _docker_available():
+        return False, ""
+    cmd = ["docker", "exec", _DOCKER_CONTAINER, "python", _DOCKER_LEASE_SCRIPT] + list(args)
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", timeout=10)
+        return result.returncode == 0, result.stdout
+    except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+        return False, str(e)
 
 # ── top-level commands ────────────────────────────────────────────────────────
 
@@ -241,25 +293,93 @@ def cmd_redis_memory(args):
     print(f"  Key Count          : 1,234,567")
 
 def cmd_redis_config(args):
-    """Get Redis connection config (used for client generation)."""
+    """Get Redis connection config (used for client generation).
+    When project=j036x0 + env=DEV and Docker is available, returns real Docker Redis info.
+    Supports --format json for machine-readable output (includes password)."""
     pid, env = _project(args), _env(args)
-    mode = _param(args, "mode", "cluster")
-    print(f"Redis Connection Config — project={pid}  env={env}")
-    print(f"  Mode       : {mode}")
-    print(f"  Endpoints  :")
-    if mode == "cluster":
-        print(f"    - redis-0.redis-headless:6379 (master, slot 0-5460)")
-        print(f"    - redis-1.redis-headless:6379 (master, slot 5461-10922)")
-        print(f"    - redis-2.redis-headless:6379 (master, slot 10923-16383)")
-    elif mode == "sentinel":
-        print(f"    - sentinel-0.redis-headless:26379")
-        print(f"    - sentinel-1.redis-headless:26379")
-        print(f"    - sentinel-2.redis-headless:26379")
-        print(f"  Master Name: mymaster")
+    mode = _param(args, "mode", "standalone")
+    fmt = _format(args)
+    local_dev = _is_local_dev(pid, env)
+    docker_ok = local_dev and _docker_available()
+
+    if fmt == "json":
+        # Machine-readable JSON output
+        if docker_ok:
+            config = {
+                "mode": mode,
+                "endpoints": [{"host": _DOCKER_REDIS_HOST, "port": int(_DOCKER_REDIS_PORT)}],
+                "password": _DOCKER_REDIS_PASSWORD,
+                "database": 0,
+                "source": "docker",
+                "container": _DOCKER_CONTAINER
+            }
+        else:
+            if mode == "cluster":
+                endpoints = [
+                    {"host": "redis-0.redis-headless", "port": 6379, "role": "master", "slots": "0-5460"},
+                    {"host": "redis-1.redis-headless", "port": 6379, "role": "master", "slots": "5461-10922"},
+                    {"host": "redis-2.redis-headless", "port": 6379, "role": "master", "slots": "10923-16383"}
+                ]
+            elif mode == "sentinel":
+                endpoints = [
+                    {"host": "sentinel-0.redis-headless", "port": 26379},
+                    {"host": "sentinel-1.redis-headless", "port": 26379},
+                    {"host": "sentinel-2.redis-headless", "port": 26379}
+                ]
+                config = {
+                    "mode": mode,
+                    "endpoints": endpoints,
+                    "master_name": "mymaster",
+                    "password": "********",
+                    "database": 0,
+                    "source": "mock"
+                }
+                print(json.dumps(config, ensure_ascii=False, indent=2))
+                return
+            else:
+                endpoints = [{"host": "redis-0.redis-headless", "port": 6379}]
+            config = {
+                "mode": mode,
+                "endpoints": endpoints,
+                "password": "********",
+                "database": 0,
+                "source": "mock"
+            }
+        print(json.dumps(config, ensure_ascii=False, indent=2))
+        return
+
+    # Human-readable text output
+    if docker_ok:
+        print(f"Redis Connection Config — project={pid}  env={env}")
+        print(f"  Mode       : {mode}")
+        print(f"  Endpoints  :")
+        print(f"    - {_DOCKER_REDIS_HOST}:{_DOCKER_REDIS_PORT}")
+        print(f"  Password   : ******** (masked)")
+        print(f"  Database   : 0")
+        print(f"  ")
+        print(f"  🐳 Source   : Docker container '{_DOCKER_CONTAINER}' (real service)")
     else:
-        print(f"    - redis-0.redis-headless:6379")
-    print(f"  Password   : ******** (masked)")
-    print(f"  Database   : 0")
+        print(f"Redis Connection Config — project={pid}  env={env}")
+        print(f"  Mode       : {mode}")
+        print(f"  Endpoints  :")
+        if mode == "cluster":
+            print(f"    - redis-0.redis-headless:6379 (master, slot 0-5460)")
+            print(f"    - redis-1.redis-headless:6379 (master, slot 5461-10922)")
+            print(f"    - redis-2.redis-headless:6379 (master, slot 10923-16383)")
+        elif mode == "sentinel":
+            print(f"    - sentinel-0.redis-headless:26379")
+            print(f"    - sentinel-1.redis-headless:26379")
+            print(f"    - sentinel-2.redis-headless:26379")
+            print(f"  Master Name: mymaster")
+        else:
+            print(f"    - redis-0.redis-headless:6379")
+        print(f"  Password   : ******** (masked)")
+        print(f"  Database   : 0")
+        print(f"  ")
+        if not local_dev:
+            print(f"  ⚠️  Source   : Mock data (project/env does not map to local Docker)")
+        else:
+            print(f"  ⚠️  Source   : Mock data (Docker Redis not available)")
 
 def cmd_redis_create(args):
     pid, env = _project(args), _env(args)
@@ -304,8 +424,40 @@ def cmd_redis_upgrade(args):
     print(f"   Version : {ver}")
 
 def cmd_redis_lease_status(args):
-    """Check Redis service lease status."""
+    """Check Redis service lease status.
+    Queries the real Docker lease proxy when available, otherwise returns mock."""
     pid, env = _project(args), _env(args)
+
+    # Try real Docker lease service
+    success, output = _docker_exec_lease("status")
+    if success and output.strip():
+        print(f"Redis Service Lease Status — project={pid}  env={env}")
+        print(f"  Cluster Name  : redis-{pid}-{env.lower()}")
+        # Parse real lease status output — skip the title line from the proxy
+        for line in output.strip().split("\n"):
+            stripped = line.strip()
+            if not stripped:
+                continue
+            # Skip the proxy's own title line
+            if stripped.startswith("Redis Service Lease Status"):
+                continue
+            # Map field names for consistent paas-cli output format
+            if stripped.startswith("Status"):
+                print(f"  Lease {stripped}")
+            elif stripped.startswith("Auto Release"):
+                print(f"  {stripped} (service will be decommissioned if not renewed)")
+            else:
+                print(f"  {stripped}")
+        print(f"  ")
+        # Check if expired to show guidance
+        if "⛔" in output or "Expired" in output:
+            print(f"  ⚠️  The Redis service has expired. Connection failures are expected.")
+            print(f"  To renew the lease, run:")
+            print(f"    paas-cli redis lease renew --project {pid} --env {env} --duration 3")
+        print(f"  🐳 Source : Docker container '{_DOCKER_CONTAINER}' (real lease)")
+        return
+
+    # Fallback to mock
     print(f"Redis Service Lease Status — project={pid}  env={env}")
     print(f"  Cluster Name  : redis-{pid}-{env.lower()}")
     print(f"  Lease Status  : ⛔ Expired")
@@ -319,15 +471,41 @@ def cmd_redis_lease_status(args):
     print(f"  ⚠️  The Redis service has expired. Connection failures are expected.")
     print(f"  To renew the lease, run:")
     print(f"    paas-cli redis lease renew --project {pid} --env {env} --duration 3")
+    print(f"  ⚠️  Source : Mock data (Docker Redis not available)")
 
 def cmd_redis_lease_renew(args):
-    """Renew Redis service lease."""
+    """Renew Redis service lease.
+    Updates the real Docker lease when available, otherwise mock."""
     pid, env = _project(args), _env(args)
     duration = _param(args, "duration", "3")
     try:
         months = int(duration)
     except ValueError:
         months = 3
+
+    # Try real Docker lease service
+    success, output = _docker_exec_lease("renew", str(months))
+    if success and output.strip():
+        print(f"✅ Redis service lease renewed successfully")
+        print(f"   Project     : {pid}")
+        print(f"   Env         : {env}")
+        print(f"   Cluster     : redis-{pid}-{env.lower()}")
+        # Parse real renew output
+        for line in output.strip().split("\n"):
+            stripped = line.strip()
+            if stripped.startswith("New Lease Start"):
+                print(f"   {stripped}")
+            elif stripped.startswith("New Lease End"):
+                print(f"   {stripped}")
+            elif stripped.startswith("Duration"):
+                print(f"   {stripped}")
+        print(f"   Status      : Active ✅")
+        print(f"   ")
+        print(f"   📝 The Redis service is now accessible. Please restart your application to reconnect.")
+        print(f"   🐳 Source : Docker container '{_DOCKER_CONTAINER}' (real lease)")
+        return
+
+    # Fallback to mock
     print(f"✅ Redis service lease renewed successfully")
     print(f"   Project     : {pid}")
     print(f"   Env         : {env}")
@@ -338,6 +516,7 @@ def cmd_redis_lease_renew(args):
     print(f"   Status      : Active ✅")
     print(f"   ")
     print(f"   📝 The Redis service is now accessible. Please restart your application to reconnect.")
+    print(f"   ⚠️  Source : Mock data (Docker Redis not available)")
 
 def cmd_redis_delete(args):
     pid, env = _project(args), _env(args)

@@ -30,6 +30,8 @@
 
 **密码**：`$PAAS_CLI redis config` 仅返回脱敏密码（如 `********`），**不得**向用户索要明文密码写入代码；生成物统一使用 `${REDIS_PASSWORD}`，由用户通过环境变量或密钥系统注入。
 
+**本地开发环境（project_id=j036x0 / env=DEV）**：当 `project_id=j036x0` 且 `env=DEV` 时，`$PAAS_CLI redis config` 自动检测本地 Docker Redis 服务；若 Docker 容器运行中，返回真实连接信息（localhost:16379）。支持 `--format json` 输出机器可读 JSON（含 password），便于 Demo 应用直接解析并连接。
+
 ### 处理流程
 
 1. **参数收集**：确认 `project_id`、`env`、`target_path`、`language`、`client_type`；`mode` 可选，用于向用户澄清部署形态，缺失时不主动索要密码
